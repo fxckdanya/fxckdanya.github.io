@@ -1,7 +1,7 @@
 <!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Север Авто: BMW из Китая</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;800&display=swap" rel="stylesheet">
 <style>
-:root{--night:#07090d;--panel:#11151c;--line:#232a35;--ink:#f3f5f8;--soft:#b7bfca;--blue:#3f7dff;--paint:#3f7dff;--m:clamp(16px,3vw,44px)}
+:root{--night:#07090d;--panel:#11151c;--line:#232a35;--ink:#f3f5f8;--soft:#b7bfca;--blue:#3f7dff;--paint:#2a5fe0;--m:clamp(16px,3vw,44px)}
 [hidden]{display:none!important}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--night);color:var(--ink);font:400 1.0625rem/1.5 Onest,Arial,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:inherit}img{display:block;width:100%;height:100%;object-fit:cover}button{font:inherit;color:inherit}:focus-visible{outline:3px solid #fff;outline-offset:3px}
 .demo{margin:0;padding:.45rem var(--m);background:var(--ink);color:var(--night);font-size:.9rem}
@@ -24,7 +24,7 @@ table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}td{p
 .visit{position:relative;min-height:80svh;display:flex;align-items:center;padding:var(--m);overflow:hidden}.visit>img{position:absolute;inset:0}.card{position:relative;width:min(100%,29rem);padding:1.5rem;background:var(--ink);color:var(--night)}.card h2{font-size:2.4rem;margin-bottom:.5rem}.card p{margin:0 0 1rem}
 footer{padding:2.5rem var(--m);font-size:.95rem;color:var(--soft)}footer div{margin-bottom:1.5rem;color:var(--ink);font:800 clamp(3rem,14vw,14rem)/.85 Onest,Arial,sans-serif;letter-spacing:-.05em}footer p{max-width:60rem;margin:.5rem 0}
 .js .r{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}.js .r.on{opacity:1;transform:none}
-@media(max-width:52rem){.calc,.big,.bar{grid-template-columns:minmax(0,1fr)}.path{grid-template-columns:repeat(2,minmax(0,1fr))}.path li{min-height:12rem}.m{grid-template-columns:5.5rem minmax(0,1fr)}h1{font-size:19vw;top:4.5rem}}
+@media(max-width:52rem){.calc,.big,.bar{grid-template-columns:minmax(0,1fr)}.path{grid-template-columns:repeat(2,minmax(0,1fr))}.path li{min-height:12rem}.m{grid-template-columns:5.5rem minmax(0,1fr)}h1{font-size:19vw;top:3.75rem}nav a[href="#hp"]{display:none}.hero{min-height:calc(100svh - 4.5rem)}.bar p{font-size:1.05rem}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.cam{animation:none}.js .r,.btn,.c,.stack i{transition:none;opacity:1;transform:none}}
 </style></head><body>
 <p class="demo">Демо-проект для портфолио. Такой компании нет. Это не официальный дилер BMW, и сайт не связан с BMW Group.</p>
@@ -43,7 +43,7 @@ footer{padding:2.5rem var(--m);font-size:.95rem;color:var(--soft)}footer div{mar
 document.documentElement.className='js';
 var EUR=90.2429,CNY=12.0557,LOG=350000,CC=1998,U=function(i,w){return 'https://images.unsplash.com/photo-'+i+'?auto=format&fit=crop&w='+w+'&q=75'};
 var M=[['BMW 3 Series 325i','1768352725348-a34e9c7baaa5',192000,184,900000,990000],['BMW 5 Series 525Li','1729966085578-c7b281cf11da',275000,208,952800,1048000],['BMW X3 xDrive25i','1681113163879-b36638289c54',325000,184,900000,990000],['BMW X5 xDrive30Li','1674996047492-6b5cdc2dcf0a',500000,258,1142400,1256600]];
-var P=[['Синий','#3f7dff'],['Красный','#ff3b30'],['Зелёный','#2fcf7e'],['Белый','#ffffff'],['Графит','#8b93a1']],CS=['#f3f5f8','#3f7dff','#ffb627','#ff3b30','#8b93a1'];
+var P=[['Синий','#2a5fe0'],['Красный','#d3201c'],['Зелёный','#0f8a55'],['Белый','#ffffff'],['Графит','#5c636e']],CS=['#f3f5f8','#3f7dff','#ffb627','#ff3b30','#8b93a1'];
 var $=function(i){return document.getElementById(i)},cur=0,col=0,yr=2026,R=function(n){return Math.round(n).toLocaleString('ru-RU')+' ₽'};
 function duty(eur){var b=eur<=8500?[.54,2.5]:eur<=16700?[.48,3.5]:eur<=42300?[.48,5.5]:eur<=84500?[.48,7.5]:eur<=169000?[.48,15]:[.48,20];return Math.max(eur*b[0],b[1]*CC)*EUR}
 function fee(r){return r<=200000?1231:r<=450000?2462:r<=1200000?4924:r<=2700000?13541:r<=4200000?18465:r<=5500000?21344:r<=10000000?49240:73860}
