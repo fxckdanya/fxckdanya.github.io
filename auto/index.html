@@ -150,6 +150,12 @@ input::placeholder{color:var(--mut)}
 .credits h1{font:22px/1.2 var(--disp)}
 .credits ul{margin:0;padding-left:18px;display:grid;gap:3px;font-size:13.5px}
 .footlink{color:var(--link);text-decoration:underline}
+.empty{max-width:46ch;padding:24px;display:grid;gap:8px;text-align:center}
+.empty h2{font:22px/1.25 var(--disp)}
+.empty p{margin:0;color:var(--mut)}
+.d2z{display:grid;gap:6px;margin-top:6px}
+.d2l{display:grid;gap:4px;font-size:14px}
+details.facts img{width:100%;display:block;margin-top:8px}
 @media (max-width:640px){.spot span{display:none}}
 @media (max-width:900px){
   html,body{height:auto}
@@ -190,12 +196,13 @@ input::placeholder{color:var(--mut)}
 /* [путь хэша, имя файла, автор, лицензия] */
 const PH={
  ax3:["e/ed","%2795-%2797_Hyundai_Accent_Sedan.jpg","Bull-Doser","Public domain"],
- alc:["2/20","03-05_Hyundai_Accent_hatchback.jpg","IFCAR","Public domain"],
+ lch:["4/4c","Hyundai_Accent_-_Lipno.jpg","Palu","CC BY-SA 4.0"],
+ lcdash:["1/12","Ur_035_%28ubt%29.JPG","Tomasz Sienicki","CC BY 3.0"],
  amc:["5/58","06-08_Hyundai_Accent.jpg","IFCAR","Public domain"],
  arb:["c/c3","20110402_hyundai_accent_wit_001.jpg","Chu","CC BY-SA 3.0"],
  ahc:["6/6f","2019_Hyundai_Accent_Preferred_in_Urban_Grey%2C_Front_Left%2C_05-22-2022.jpg","Elise240SX","CC BY-SA 4.0"],
  abn:["4/41","Hyundai_Accent_1.5_MPI_Smart%2B_%28VI%29_%E2%80%93_f_08032025.jpg","M 93","CC BY-SA 3.0 de"],
- srb:["7/7c","Delimobil_carsharing_car_in_Moscow.jpg","Stolbovsky","CC BY-SA 3.0"],
+ srb:["6/6e","Moscow%2C_Hyundai_Solaris_sedan_blue_Aug_2025_01.jpg","Retired electrician","CC0"],
  shc:["4/47","Hyundai_Solaris_%28HCR%29_en_Tjumeno.jpg","RG72","CC BY-SA 4.0"],
  rdc:["7/78","2003-2005_Kia_Rio.jpg","IFCAR","Public domain"],
  rjb:["a/a9","%2709_Kia_Rio5_%28Front%2C_MIAS%29.JPG","Bull-Doser","Public domain"],
@@ -244,10 +251,8 @@ const pageURL=k=>"https://commons.wikimedia.org/wiki/File:"+PH[k][1];
 const credit=k=>`Фото: <a href="${pageURL(k)}" target="_blank" rel="noopener">${PH[k][2]}</a>, ${PH[k][3]}`;
 /* Подписи на настоящем моторном отсеке и салоне. Точки поставлены по виду снимка, сверяйте с руководством. */
 const SPOTS={
- hood:{r:500/281,k:"z_hood",n:"Kia Rio 2018. На другом поколении расположение может отличаться.",s:[["engine",38,47,"Двигатель"],["oil",25,43,"Масляная горловина"],["intake",35,78,"Впускной коллектор"],["alternator",20,82,"Генератор",0],["mc",67,22,"Бачок тормозов"],["battery",83,44,"Аккумулятор",1],["radiator",67,83,"Пробка радиатора"]]},
- cabin:{r:500/333,k:"z_cabin",n:"Kia Rio 2017, правый руль. На другом поколении салон отличается.",s:[["steering",83,49,"Руль",1],["dash",48,42,"Торпедо"],["hvac",48,65,"Климат"],["shifter",48,85,"Рычаг КПП"]]},
- trunk:{k:"spare",n:"Ниша запаски, SEAT Leon. Показано как пример."},
- under:{k:"beam",n:"Задняя балка снизу, VW Golf. Показано как пример."}
+ hood:{r:500/281,k:"z_hood",n:"Kia Rio 2018, это поколение.",s:[["engine",38,47,"Двигатель"],["oil",25,43,"Масляная горловина"],["intake",35,78,"Впускной коллектор"],["alternator",20,82,"Генератор",0],["mc",67,22,"Бачок тормозов"],["battery",83,44,"Аккумулятор",1],["radiator",67,83,"Пробка радиатора"]]},
+ cabin:{r:500/333,k:"z_cabin",n:"Kia Rio 2017, это поколение, правый руль.",s:[["steering",83,49,"Руль",1],["dash",48,42,"Торпедо"],["hvac",48,65,"Климат"],["shifter",48,85,"Рычаг КПП"]]}
 };
 
 /* ─────────── Каталог ─────────── */
@@ -258,6 +263,10 @@ const SRC={
   dr:["Дром: Solaris и Rio I","https://www.drom.ru/info/misc/hyundai-solaris-kia-rio-85699.html"],
   ko:["Колёса.ру: гид по Solaris I","https://www.kolesa.ru/article/vybor-bolshe-tseny-te-zhe-gid-po-pokupke-hyundai-solaris-i"],
   w1:["www1.ru: конец сборки Solaris HS","https://www1.ru/en/news/2025/09/13/proshhai-hyundai-solaris-sborka-solaris-hs-polnostiu-prekratilas-na-smenu-prixodit-solaris-krs-b.html"],
+  k1:["Колёса.ру: Accent II, кузов и салон","https://www.kolesa.ru/article/hyundai-accent-ii-lc-s-probegom-dyra-iz-arki-v-salon-i-elektrika-v-kotoroi-necemu-lomatsia"],
+  k2:["Колёса.ру: Accent II, ходовая, коробки, моторы","https://www.kolesa.ru/article/hyundai-accent-ii-lc-s-probegom-akp-lucse-mexaniki-i-grm-kak-rasxodnik"],
+  k3:["Колёса.ру: ремонт и обслуживание Accent","https://www.kolesa.ru/article/kupil-i-katajsja-remont-i-obsluzhivanie-hyundai-accent-2016-04-04"],
+  d2:["Drive2: история Accent 2G","https://www.drive2.ru/l/4571851/"],
   m1:["Motor1: Hyundai Verna 2023","https://www.motor1.com/news/658416/2023-hyundai-verna-debut-specs/"],
   sc:["South Charlotte Hyundai","https://www.southcharlottehyundai.com/hyundai-accent-generations-all-model-years.htm"]
 };
@@ -274,12 +283,54 @@ const GAMMA={
   extra:["cat","chain","tug","sh"]
 };
 const G=(tier,code,y,body,eng,src,o={})=>({tier,code,y,body,eng,src,...o});
+const LC2={psrc:["k1","k2","k3","d2"],hide:["beam"],real:{dash:["lcdash","Панель приборов Accent LC."]},drive:"Ремень на всех бензиновых моторах, на 16-клапанных есть ещё межвальная цепь. Точно смотрите по коду своего мотора.",
+ over:{rshock:{n:"Задние стойки McPherson",d:"На этом поколении сзади тоже независимые стойки McPherson, балки нет.",f:["Люфты и скрип: сайлентблоки рычагов","Масло на штоке","Раскачка кормы"],c:["Сайлентблоки задних рычагов","Шток стойки","Состояние внутренней арки"]},
+  column:{d:"Передаёт поворот руля к рейке. Усилитель здесь гидравлический и работает в рейке, на колонке его нет.",f:["Люфт в руле","Щелчки при вращении на месте"],c:["Шарниры промежуточного вала"]}},
+ notes:{engine:"Моторы серии Alpha: 12-клапанные G4EH 1.3 и G4EK 1.5, 16-клапанные G4EC 1.5 и G4ED 1.6. Чугунный блок, гидрокомпенсаторы, распределённый впрыск. Расход масла обычно начинается примерно с 200 тыс. км.",
+  timing:"При обрыве ремня гнутся клапаны на всех версиях. Колёса.ру советует менять ремень каждые 50 тыс. км, осторожные владельцы меняют в 40 тыс. Межвальную цепь 16-клапанных меняют при расхождении фаз, ориентир 150–200 тыс. км.",
+  oil:"Фильтр стоит спереди картера, снизу его не открутить без снятия защиты. Плунжер и пружину регулятора давления масла меняют без снятия насоса.",
+  coils:"На 16-клапанном моторе свечи под накладкой, она держится на трёх болтах.",
+  intake:"Крышка воздушного фильтра на четырёх защёлках, инструмент не нужен. Шланг вентиляции картера перетирается на изгибе о пластик.",
+  battery:"Обратная полярность. При ошибке обычно сгорает предохранитель на 100 А.",
+  lights:"К лампе левой фары добираются через снятый аккумулятор. Сами фары считаются слабым местом.",
+  pump:"Держит около 200 тыс. км, недорогая, её часто меняют заранее.",thermostat:"Держит около 200 тыс. км, его часто меняют заранее.",radiator:"Течи радиатора здесь типичны.",
+  gearbox:"Механика 5 ступеней: к 100 тыс. км бывают вой и вибрация. Самая опасная поломка: сепаратор подшипника дифференциала, он может разрушить коробку. Автомат A4AF3: с завода SP-III, смешивать с Dexron нельзя. Чтобы заменить больше жидкости, снимают поддон с фильтром.",
+  shafts:"Ресурс ШРУСов невысокий, если порван пыльник. Смотрят пыльники, ржавые шлицы и люфты.",
+  strut:"Спереди McPherson. К 100 тыс. км стойка заметно теряет управляемость и комфорт, изнашиваются и её опоры.",arm:"L-образный рычаг с сайлентблоками.",sway:"Втулки стабилизатора здесь расходник.",hubs:"Ступичные подшипники здесь расходник, менять их дороже и сложнее.",
+  rack:"Гидравлическая рейка. Течи и стуки бывают уже на пробегах до 200 тыс. км. Наконечники рулевых тяг расходник.",
+  fbrake:"Вентилируемые диски и плавающая скоба. У европейских машин с мотором 1.3 диски меньше. После 10 лет могут закисать цилиндры.",rbrake:"Сзади барабаны.",blines:"Трубки к 15 годам обычно прогнивают.",abs:"Часто не работает: датчики, кольца на ШРУСах, зазор датчика, загрязнённый мотор насоса.",
+  tank:"На таганрогских машинах бак пластиковый, на ранних американских может быть стальным.",hvac:"Отказывает мотор вентилятора, забивается радиатор печки, кондиционер часто не работает.",trunkl:"Замок багажника считается слабым местом.",seats:"Сиденья изнашиваются, что на такой машине нормально.",steering:"Подрулевые переключатели со временем изнашиваются."},
+ extra:["lcbelt","lcrust","lcabs","lcgb"]};
+Object.assign(LC2.notes,{
+ fuses:"Основной блок справа в моторном отсеке, схема на крышке. Реле в салоне: под панелью приборов, за вещевым ящиком. В блоке есть предохранитель 100 А цепи генератора.",
+ thermostat:"Для замены сливают антифриз и снимают корпус воздушного фильтра, для удобства ещё аккумулятор. Крышка термостата на четырёх болтах. Обычно держит около 200 тыс. км.",
+ pump:"Ремень и помпа на 12- и 16-клапанном моторе разные, детали подбирают по мотору. Обычно держит около 200 тыс. км.",
+ mounts:"Опоры здесь четыре: левая на коробке, правая, передняя и задняя.",
+ hubs:"Задний подшипник идёт в сборе со ступицей, нужна головка на 32. Барабан держит фиксирующий винт, снимают его двумя болтами М8 в штатные отверстия. Передний подшипник менять сложнее.",
+ rshock:"Владельцы меняют здесь стойки, пружины и шесть задних рычагов. Гайки рычагов часто прикипают настолько, что их срезают.",
+ sway:"Спереди и сзади есть стабилизатор со стойками. Втулки расходник, резиновые подушки стоек сплющиваются и дубеют.",
+ strut:"Вверху стойка держится на трёх гайках опоры, внизу на двух болтах к кулаку. К 100 тыс. км заметно теряет управляемость и комфорт.",
+ gearbox:"Механика 5 ступеней: к 100 тыс. км бывают вой и вибрация. Самая опасная поломка: сепаратор подшипника дифференциала. При снятии коробка может упереться в подрамник. Автомат A4AF3: с завода SP-III, с Dexron не смешивать. Чтобы заменить больше жидкости, снимают поддон с фильтром.",
+ fpump:"Модуль вынимают, наклоняя к багажнику, чтобы не повредить поплавок, и дают бензину стечь в бак. Сетка грубой очистки меняется отдельно.",
+ oil:"Фильтр спереди картера, снизу не открутить без снятия защиты. При течи поддона снимают защиту и выхлопную трубу, старый герметик подрезают ножом.",
+ intake:"Крышка фильтра на четырёх защёлках, инструмент не нужен. Шланг вентиляции картера перетирается на изгибе о пластик. Болты топливной рампы бывают ослаблены, их стоит проверить.",
+ coils:"На 16-клапанном моторе свечи под накладкой на трёх болтах. Пробой катушки в темноте бывает виден при работе мотора.",
+ ecu:"Датчик коленвала стоит неудобно: владельцы подлезают к нему укороченным гнутым ключом на 10.",
+ exhcat:"После ошибки P0131 один из владельцев заменил приёмную трубу и первую лямбду. Болты фланцев прикипают.",
+ rbrake:"Сзади барабаны. Отказ ручника бывает из-за закисшего механизма, при исправных тросиках.",
+ rack:"Гидравлическая рейка. Течи и стуки бывают уже на пробегах до 200 тыс. км. Стук на скорости до 40 км/ч бывает от люфта вала рейки, проверяют его снизу. Наконечники тяг расходник.",
+ hvac:"Отказывает мотор вентилятора, забивается радиатор печки: входной патрубок горячий, выходной еле тёплый. Кондиционер часто не работает."
+});
+const D2={engine:[["Обзор: вся история Accent 2-го поколения","4571851"]],timing:[["Замена ремня ГРМ и помпы, 12 клапанов, 2004","556101371443544335"],["Замена ремня и цепи ГРМ, 2005","698750635641681479"]],belt:[["Ремни навесного, G4EC","458318778728506029"]],mounts:[["Замена всех опор двигателя, 2003","682628771521501072"]],oil:[["Замена поддона, 2004","677754361597669134"]],intake:[["Чистка форсунок и дросселя","515727029593703371"]],coils:[["Катушки и свечи, 2004","546547989787705719"]],ecu:[["Замена датчика коленвала","640891035253233433"],["Описание ошибок ЭБУ","6486586"]],fuses:[["Блок предохранителей, 2004","4062246863888659407"]],starter:[["Замена стартера","711492875895980117"]],alternator:[["Генератор: запись владельца","5990524"]],radiator:[["Замена радиатора, 2004","700680278548421936"]],pump:[["Замена помпы","7042477"]],thermostat:[["Замена термостата","562202836343980834"]],hoses:[["Замена всех патрубков","653936740716792155"]],gearbox:[["Снятие МКПП","523026137534694212"],["Масло в АКПП","456059282333369775"]],clutch:[["Замена сцепления","1246699"]],shafts:[["Ревизия ШРУСов","8278980"]],strut:[["Замена передних стоек","8819354"]],arm:[["Сайлентблоки, шаровые, наконечник","472252339831439431"]],subframe:[["Подрамник: покупка и подготовка","631125172975318019"]],sway:[["Стойки и втулки стабилизаторов","475146254435745884"]],hubs:[["Передний подшипник","498635121339925041"],["Задние подшипники","288230376152591917"]],rshock:[["Полная замена задней подвески","655227567367801207"],["Сгнившие задние стаканы, 2004","540568020922138712"]],fbrake:[["Замена тормозов по кругу","533422844609036434"]],rbrake:[["Барабаны: первый серьёзный ремонт","467136312227398635"]],mc:[["Главный тормозной цилиндр","7258242"],["Вакуумный усилитель, 2004","4448484"]],blines:[["Тормозные трубки","606380388914299007"]],rack:[["Ремонт рулевой рейки","4777423"]],fpump:[["Замена топливного модуля","610331483948739352"],["Фильтры и сетка","504815201321747257"]],muffler:[["Замена гофры, 2004","288230376152421771"]],exhcat:[["Приёмная труба и лямбда, 2004","4184919"]],lights:[["Лампы в фарах","589190899003576643"]],hvac:[["Замена радиатора печки","688021601177831521"]],ac:[["Заправка кондиционера","589199145340823090"]],trunkl:[["Кнопка открытия багажника","663119312076167123"]]};
+const D2Z={hood:[["Подкапотка, 1.5, 102 л.с., 2005","471760583255916879"]],cabin:[["Химчистка салона, 2005","620452763360341069"],["Химчистка своими руками, 2007","9913647"]],trunk:[["Шумоизоляция багажника","288230376152622558"],["Обшивка багажника","1411509"]],under:[["Замена поддона: вид снизу, 2004","677754361597669134"],["Покраска и антикор днища","623539917133193645"]]};
+LC2.d2=D2;LC2.d2z=D2Z;
+const d2Links=l=>l.map(x=>`<a href="https://www.drive2.ru/l/${x[1]}/" target="_blank" rel="noopener">${x[0]}</a>`).join("");
 const NATIONS=[
  {id:"korea",c:"KR",n:"Корея",makes:[
   {id:"hyundai",n:"Hyundai",models:[
    {id:"accent",n:"Accent",alt:"Verna, Excel, Pony",gens:[
     G("I","X3","1994–1999","Хэтчбек 3 и 5 дв., седан, малая партия купе","Бензин 1.3, 1.5, 1.6",["hb","wa"],{note:"Годы для Кореи. На других рынках выпускали до 2006."}),
-    G("II","LC","1999–2005","Хэтчбек 3 и 5 дв., седан","Бензин 1.3, 1.4, 1.5, 1.6; дизель 1.5",["hb","wa"],{note:"В России и Индонезии собирали с 2001 по 2012. Рестайлинг 2003 года называется LC2."}),
+    G("II","LC","1999–2005","Хэтчбек 3 и 5 дв., седан. В Таганроге только седан","Бензин G4EH 1.3 (84 л.с.), G4EK 1.5 (87 л.с.), G4EC 1.5 (102 л.с.), G4ED 1.6 (103 л.с.); дизель 1.5",["k1","k2","k3","wa","hb"],{...LC2,note:"Запуск в ноябре 1999. Таганрогская сборка с апреля 2001: Колёса.ру называет конец в 2011, Wikipedia в 2012."}),
     G("III","MC","2005–2010","Седан, хэтчбек 3 дв.","Бензин 1.4, 1.6; дизель 1.5",["hb","wa"],{note:"В Индии выпускали до 2011."}),
     G("IV","RB","2010–2017","Седан, хэтчбек 5 дв.","Бензин 1.4 и 1.6; дизель 1.4 и 1.6",["hb","wa","dr","ko"],{...GAMMA,note:"Источники расходятся в конце выпуска: 2017 или 2019, зависит от рынка. В России это Solaris. Замечания по ремонту собраны именно по российскому Solaris, на других рынках моторы и коробки могут отличаться."}),
     G("V","HC / YC","2017–2023","Седан, хэтчбек 5 дв.","Бензин 1.0 турбо, 1.4, 1.5, 1.6; дизель 1.5",["wa","hb","sc"],{note:"Источники расходятся в начале: Wikipedia даёт 2017 (в Китае 2016), hyundaibook даёт 2018. Американский дилер указывает модельные годы до 2022. Следующее поколение вышло в 2023, на части рынков сроки могут отличаться. В России это Solaris."}),
@@ -296,7 +347,7 @@ const NATIONS=[
     G("I","DC","1999–2005","Седан, универсал","Бензин 1.3, 1.5, 1.6",["wr"],{note:"Rio выпускается с ноября 1999. Год смены поколения зависит от рынка."}),
     G("II","JB","2005–2011","Седан, хэтчбек","Бензин 1.4, 1.6; дизель 1.5",["wr"],{note:"В Европе с начала 2005, в Северной Америке с 2006 модельного года."}),
     G("III","UB / QB","2011–2017","Седан, хэтчбек","Для России QB: бензин 1.4, 1.6",["wr","dr","ko"],{...GAMMA,note:"Российская версия QB собиралась в Санкт-Петербурге с 15 августа 2011. Замечания по ремонту относятся к ней."}),
-    G("IV","YB / FB","2017–2023","Седан, хэтчбек","Для России FB: бензин 1.4, 1.6",["wr"],{note:"Российская версия FB с 4 июля 2017. Производство Rio в целом указано до декабря 2023."})
+    G("IV","YB / FB","2017–2023","Седан, хэтчбек","Для России FB: бензин 1.4, 1.6",["wr"],{zones:["hood","cabin"],note:"Российская версия FB с 4 июля 2017. Производство Rio в целом указано до декабря 2023."})
    ]},
    {n:"Ceed"},{n:"Cerato"},{n:"Sportage"},{n:"Soul"}
   ]},
@@ -467,7 +518,7 @@ const PARTS={
   g(g){g.cyl([-1.08,.3,-.6],[-1.08,.3,.6],.035);for(const s of [1,-1]){g.sweep([[-.82,.34,.62*s],[-1.08,.3,.62*s],[-1.285,.31,.62*s]],.028,8)}}},
  rshock:{n:"Задние амортизаторы и пружины",s:"susp",z:"under trunk",
   d:"Пружина держит вес, амортизатор гасит колебания. На балке они стоят раздельно.",
-  l:[["beam","Болт снизу"],["spare","Верхние крепления выходят к зоне багажника"]],
+  l:[["beam","Болт снизу"]],
   f:["Масляные следы","Пробои с грузом","Раскачка кормы"],c:["Осмотр штока и резины"],
   g(g){for(const s of [1,-1]){g.cyl([-1.34,.32,.55*s],[-1.4,.72,.52*s],.024);g.helix([-1.12,.3,.5*s],[-1.12,.52,.5*s],.07,.01,4)}}},
  wheels:{n:"Колёса и шины",s:"susp",z:"under",ghost:1,
@@ -587,15 +638,20 @@ const SYMPTOMS=[
  {id:"cat",g:1,t:"Масло уходит и падает тяга",sev:"care",L:"Ехать осторожно до сервиса",p:["exhcat","engine"],s:["Проверьте историю замены катализатора.","Сделайте компрессию и посмотрите цилиндры эндоскопом.","Осмотрите катализатор: разрушение и пыль в цилиндрах описаны в обоих обзорах."]},
  {id:"chain",g:1,t:"Лязг или шелест в районе ГРМ",sev:"care",L:"Ехать осторожно до сервиса",p:["timing","oil"],s:["Узнайте пробег замены цепи.","Проверьте уровень масла.","Считайте ошибки по положению распредвала и коленвала.","Проверьте зазоры клапанов, если стук сверху."]},
  {id:"tug",g:1,t:"Руль вращается туго и рывками",sev:"care",L:"Ехать осторожно до сервиса",p:["column","subframe","rack"],s:["Проверьте, до рестайлинга ли машина.","Посмотрите положение подрамника и промежуточный вал.","Опишите мастеру: туго именно рывками, это важно."]},
+ {id:"lcbelt",g:1,t:"Неизвестно, когда меняли ремень ГРМ",sev:"care",L:"Ехать осторожно до сервиса",p:["timing","pump"],s:["Если подтверждения замены нет, считайте, что её не было.","Замените ремень: при обрыве гнутся клапаны.","Заодно осмотрите помпу и ролики."]},
+ {id:"lcrust",g:1,t:"Ржавчина во внутренней задней арке",sev:"stop",L:"Не ехать",p:["rshock"],s:["Проверьте арку изнутри и снизу, заплатки тоже считаются тревожным знаком.","Если металл сгнил, стойка может провалиться в салон.","Покажите машину кузовщику до дальнейшей езды."]},
+ {id:"lcabs",g:1,t:"Горит ABS или она не срабатывает",sev:"care",L:"Ехать осторожно до сервиса",p:["abs","shafts"],s:["Считайте код и найдите колесо.","Проверьте датчик, его зазор и кольцо на ШРУСе.","Проверьте мотор гидронасоса."]},
+ {id:"lcgb",g:1,t:"Вой или вибрация из механики",sev:"care",L:"Ехать осторожно до сервиса",p:["gearbox","shafts"],s:["Проверьте уровень масла и течи.","Не тяните с ремонтом подшипников: сепаратор дифференциала может разрушить коробку."]},
  {id:"sh",g:1,t:"Автомат работает с толчками",sev:"care",L:"Ехать осторожно до сервиса",p:["fuses","gearbox","clutch"],s:["Осмотрите шлейф и разъём к АКПП на окисление.","Считайте ошибки блока коробки.","Проверьте, когда меняли масло. Перегрев и грязное масло вредят автомату."]}
 ];
 const SAFETY="Под поднятую машину лезут только с подставками. Систему охлаждения открывают на холодном моторе. Моменты затяжки, объёмы и допуски здесь не указаны: берите их из заводского руководства под ваш VIN.";
 
 /* ─────────── Связи и выборки ─────────── */
+const BASE={};for(const id in PARTS)BASE[id]={...PARTS[id]};
 const LINKS={};
 for(const id in PARTS){LINKS[id]=LINKS[id]||[];PARTS[id].l.forEach(([to,via])=>{LINKS[id].push([to,via]);(LINKS[to]=LINKS[to]||[]).push([id,via])})}
 for(const id in LINKS){const seen=new Set();LINKS[id]=LINKS[id].filter(([to])=>seen.has(to)?false:(seen.add(to),true))}
-const CARPH={"accent-x3":"ax3","accent-lc":"alc","accent-mc":"amc","accent-rb":"arb","accent-hc":"ahc","accent-bn7":"abn","solaris-rb":"srb","solaris-hc":"shc","rio-dc":"rdc","rio-jb":"rjb","rio-ub":"rqb","rio-yb":"ryb"};
+const CARPH={"accent-x3":"ax3","accent-lc":"lch","accent-mc":"amc","accent-rb":"arb","accent-hc":"ahc","accent-bn7":"abn","solaris-rb":"srb","solaris-hc":"shc","rio-dc":"rdc","rio-jb":"rjb","rio-ub":"rqb","rio-yb":"ryb"};
 const makeOf=(n,m)=>n.makes.find(x=>x.id===m);
 const modelOf=(mk,m)=>mk.models.find(x=>x.id===m);
 const findNat=id=>NATIONS.find(n=>n.id===id)||NATIONS[0];
@@ -775,7 +831,7 @@ function renderTree(){
    ${mk?`<div class="tier"><h2>Модели: ${mk.n}</h2><div class="row">${mk.models.map(q=>q.gens?`<button class="tile" data-md="${q.id}" aria-current="${!!md&&q.id===md.id}"><strong>${q.n}</strong><span>${q.gens.length} покол. · ${q.alt}</span></button>`:`<button class="tile" disabled><strong>${q.n}</strong><span>В очереди</span></button>`).join("")}</div></div>`:""}
    ${md?`<div class="tier"><h2>${mk.n} ${md.n}: поколения по годам</h2><div class="chain-wrap"><ol class="chain">${md.gens.map(g=>`<li><button class="gen" data-g="${slug(g)}"><span class="h"><span class="tn">${g.tier}</span><span class="code">${g.code}</span></span><img src="${imgURL(CARPH[md.id+"-"+slug(g)],330)}" alt="${mk.n} ${md.n} ${g.code}" loading="lazy" data-fb="1"><span class="y">${g.y}</span><span class="st ${g.notes?"full":""}">${g.notes?"Схема и заметки по ремонту":"Схема и общий ремонт"}</span></button></li>`).join("")}</ol></div></div>`:""}
   </section></div>
-  <footer class="foot">На плитках настоящие машины этих поколений. <button class="footlink" id="fc">Авторы и лицензии фото</button></footer>`;
+  <footer class="foot">На плитках настоящие заводские машины этих поколений. <button class="footlink" id="fc">Авторы и лицензии фото</button></footer>`;
  $("#fc").onclick=()=>go("photos");
  app.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{const nn=findNat(b.dataset.n);const first=nn.makes.find(m=>m.models);go(first?`tree-${nn.id}-${first.id}`:`tree-${nn.id}`)});
  app.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{const m=makeOf(n,b.dataset.m),f=m.models.find(q=>q.gens);go(`tree-${n.id}-${m.id}-${f.id}`)});
@@ -786,7 +842,7 @@ function renderTree(){
 function openCar(){
  const n=findNat(state.nat),mk=makeOf(n,state.make),md=modelOf(mk,state.model),g=state.gen;
  setCrumbs([[n.n,`tree-${n.id}`],[mk.n,`tree-${n.id}-${mk.id}`],[md.n,`tree-${n.id}-${mk.id}-${md.id}`],[`${g.tier} ${g.code}`,null]]);
- Object.assign(state,{part:null,sym:null,zone:"all",q:"",tab:"build",mode:"photo"});state.off=new Set();
+ Object.assign(state,{part:null,sym:null,zone:"all",q:"",tab:"build",mode:"photo"});for(const id in BASE)PARTS[id]={...BASE[id],...((g.over||{})[id]||{})};state.off=new Set();
  if(scene){scene.destroy();scene=null}
  app.innerHTML=`<div class="car">
   <div class="stage" id="stage"><div class="photo" id="photo"></div><canvas id="gl" hidden aria-label="Вращаемая схема машины. Список тех же деталей есть в панели."></canvas>
@@ -807,22 +863,23 @@ function setMode(m){state.mode=m;const tdim=m==="3d";$("#mode").querySelectorAll
   if(!scene.gl){const d=document.createElement("div");d.className="nogl";d.textContent="Этот браузер не показывает 3D. Фото, список деталей и раздел ремонта работают.";$("#stage").append(d);scene=null}else{scene.setCam(state.zone);if(state.zone!=="all")scene.shellA=.45}}
  if(!tdim&&scene){scene.destroy();scene=null;const old=$("#gl"),neu=old.cloneNode(false);old.replaceWith(neu);neu.hidden=true}
  applyVisibility()}
+const NEED={hood:"моторный отсек сверху при открытом капоте",cabin:"торпедо целиком с водительского места и задний ряд",trunk:"открытый багажник и ниша запаски",under:"днище на подъёмнике, спереди и сзади"};
 function renderPhoto(){const box=$("#photo"),cap=$("#cap");if(!box||state.mode!=="photo")return;
- const g=state.gen,carK=CARPH[state.model+"-"+slug(g)];let key=null,note="",spot=null;
- const symPart=state.sym&&symById(state.sym).p.find(id=>PH[id]);
- const pid=state.part||symPart;
- if(pid&&PH[pid]){key=pid;note=pid==="engine"?"Настоящий мотор Gamma 1.6 MPi.":pid==="dash"?"Настоящий салон Kia Rio 2017.":"Настоящая деталь, снята на другой машине.";}
- else if(state.zone!=="all"){const z=SPOTS[state.zone];spot=z.s?z:null;key=z.k;note=z.n}
- else{key=carK;note="Настоящая машина этого поколения."}
- if(state.part&&!PH[state.part])note="Проверенного фото этой детали пока нет. "+note;
- const ident=key+"|"+(spot?state.zone:"");
+ const g=state.gen,carK=CARPH[state.model+"-"+slug(g)],real=g.real||{};let key=null,note="",spot=null;
+ const symPart=state.sym&&symById(state.sym).p.find(id=>real[id]);const pid=state.part||symPart;
+ if(pid&&real[pid]){key=real[pid][0];note=real[pid][1]}
+ else if(state.zone!=="all"){if((g.zones||[]).includes(state.zone)){spot=SPOTS[state.zone];key=spot.k;note=spot.n}}
+ else{key=carK;note=state.part?"Фото этой детали с этой машины пока нет. Показана сама машина.":"Настоящая машина этого поколения."}
+ const ident=key?key+"|"+(spot?state.zone:""):"empty|"+state.zone;
  if(box.dataset.id!==ident){box.dataset.id=ident;
-  box.innerHTML=spot?`<div class="pwrap" style="--r:${spot.r}"><img src="${imgURL(key,960)}" alt="${note}">${spot.s.map(a=>`<button class="spot ${a[4]?"flip":""}" data-p="${a[0]}" style="left:${a[1]}%;top:${a[2]}%" aria-label="${a[3]}"><i></i><span>${a[3]}</span></button>`).join("")}</div>`:`<img src="${imgURL(key,960)}" alt="${note}">`;
+  if(!key){const zn=ZONES.find(z=>z[0]===state.zone)[1];box.innerHTML=`<div class="empty"><div class="lab">${zn}</div><h2>Настоящего фото этого поколения пока нет</h2><p>Чужие машины сюда не ставим. Нужен снимок: ${NEED[state.zone]}.</p>${g.d2z?`<div class="d2z"><div class="lab">Настоящие фото этого поколения у владельцев на Drive2</div>${d2Links(g.d2z[state.zone]||[])}</div><p class="src">Откроется на сайте автора. На этих машинах могут быть доработки.</p>`:""}</div>`}
+  else box.innerHTML=spot?`<div class="pwrap" style="--r:${spot.r}"><img src="${imgURL(key,960)}" alt="${note}">${spot.s.map(a=>`<button class="spot ${a[4]?"flip":""}" data-p="${a[0]}" style="left:${a[1]}%;top:${a[2]}%" aria-label="${a[3]}"><i></i><span>${a[3]}</span></button>`).join("")}</div>`:`<img src="${imgURL(key,960)}" alt="${note}">`;
   box.querySelectorAll(".spot").forEach(b=>b.onclick=()=>selectPart(b.dataset.p))}
- cap.innerHTML=`<span>${note} ${credit(key)}</span>`}
+ cap.innerHTML=key?`<span>${note} ${credit(key)}</span>`:""}
 function setZone(z){state.zone=z;$("#zones").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.z===z));if(scene){scene.setCam(z);scene.spin=false;scene.shellA=z==="all"?1:.45}
  if(state.part&&!inZone(state.part))state.part=null;applyVisibility();renderPanel()}
-const inZone=id=>state.zone==="all"||PARTS[id].z.split(" ").includes(state.zone);
+const hidden=id=>(state.gen&&state.gen.hide||[]).includes(id);
+const inZone=id=>!hidden(id)&&(state.zone==="all"||PARTS[id].z.split(" ").includes(state.zone));
 function applyVisibility(){if(scene)scene.visible=new Set(Object.keys(PARTS).filter(id=>inZone(id)&&!state.off.has(PARTS[id].s)));syncHi()}
 function syncHi(){renderPhoto();const ss=$("#stampSel");if(ss)ss.textContent=state.part?PARTS[state.part].n:"Типовая схема, без масштаба";if(!scene)return;const hi=new Map();if(state.part){(LINKS[state.part]||[]).forEach(([t])=>hi.set(t,1));scene.sel=state.part}else scene.sel=null;
  if(state.sym&&!state.part){symById(state.sym).p.forEach(id=>hi.set(id,2))}
@@ -834,7 +891,7 @@ function setTab(t){state.tab=t;state.part=null;state.sym=null;$("#t-build").setA
 function selectPart(id){state.part=id;if(scene)scene.spin=false;applyVisibility();renderPanel();const b=$("#pb");if(b)b.scrollTop=0}
 function srcHTML(keys){return `<p class="src">Источники: ${keys.map(k=>`<a href="${SRC[k][1]}" target="_blank" rel="noopener">${SRC[k][0]}</a>`).join(", ")}</p>`}
 function genHead(){const g=state.gen,md=modelOf(makeOf(findNat(state.nat),state.make),state.model);return `<div><h1 class="gname">${md.n} ${g.tier} · ${g.code}</h1><div class="gyears">${g.y}</div></div>
- <details class="facts"><summary>Кузова, моторы, источники</summary><div class="dl"><div><span class="lab">Кузов</span><span>${g.body}</span></div><div><span class="lab">Моторы</span><span>${g.eng}</span></div>${g.drive?`<div><span class="lab">Привод ГРМ</span><span>${g.drive}</span></div>`:""}${g.note?`<div><span class="lab">Замечание</span><span>${g.note}</span></div>`:""}</div>${srcHTML(g.src)}</details>`}
+ <details class="facts"><summary>Кузова, моторы, источники</summary><div class="dl"><div><span class="lab">Кузов</span><span>${g.body}</span></div><div><span class="lab">Моторы</span><span>${g.eng}</span></div>${g.drive?`<div><span class="lab">Привод ГРМ</span><span>${g.drive}</span></div>`:""}${g.d2?`<div><span class="lab">Источник заметок</span><span>Статьи Колёса.ру и записи владельцев на Drive2, пересказано своими словами.</span></div>`:""}${g.note?`<div><span class="lab">Замечание</span><span>${g.note}</span></div>`:""}</div>${srcHTML(g.src)}</details>`}
 function renderPanel(){const pb=$("#pb");if(!pb)return;if(state.tab==="repair")renderRepair(pb);else renderBuild(pb)}
 function renderBuild(pb){
  if(state.part){pb.innerHTML=partHTML(state.part,"Все детали");wirePart(pb);return}
@@ -843,7 +900,7 @@ function renderBuild(pb){
  ${g.notes?"":`<div class="banner warn">Для этого поколения проверены только годы и моторы. Устройство показано на примерах и может отличаться.</div>`}
  <div class="chips" aria-label="Системы">${Object.keys(SYS).map(k=>`<button class="chip" data-s="${k}" aria-pressed="${!state.off.has(k)}" style="--c:${SYS[k][1]}"><i></i>${SYS[k][0]}</button>`).join("")}</div>
  <label><span class="lab" style="display:block;margin-bottom:4px">Найти деталь</span><input type="search" id="q" value="${state.q}" placeholder="Например, помпа"></label>
- <div><div class="lab" style="margin-bottom:5px">Показано деталей: ${list.length}</div>${list.length?`<div class="plist">${list.map(id=>`<button data-p="${id}" style="--c:${SYS[PARTS[id].s][1]}">${PH[id]?`<img src="${imgURL(id,330)}" alt="" loading="lazy">`:`<span class="noimg"><i></i></span>`}${PARTS[id].n}${g.notes&&g.notes[id]?"<small>заметка</small>":""}</button>`).join("")}</div>`:`<p class="note">Ничего не нашлось. Включите системы выше или измените запрос.</p>`}</div>`;
+ <div><div class="lab" style="margin-bottom:5px">Показано деталей: ${list.length}</div>${list.length?`<div class="plist">${list.map(id=>`<button data-p="${id}" style="--c:${SYS[PARTS[id].s][1]}"><i></i>${PARTS[id].n}${g.notes&&g.notes[id]?"<small>заметка</small>":""}</button>`).join("")}</div>`:`<p class="note">Ничего не нашлось. Включите системы выше или измените запрос.</p>`}</div>`;
  pb.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{const k=b.dataset.s;state.off.has(k)?state.off.delete(k):state.off.add(k);applyVisibility();renderPanel()});
  pb.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>selectPart(b.dataset.p));
  const q=$("#q");q.oninput=()=>{state.q=q.value;const pos=q.selectionStart;renderPanel();const n=$("#q");n.focus();n.setSelectionRange(pos,pos)}}
@@ -851,10 +908,11 @@ function partHTML(id,back){const p=PARTS[id],g=state.gen,note=g.notes&&g.notes[i
  return `<button class="back" id="bk">← ${back}</button>
  <div><div class="lab">${SYS[p.s][0]}</div><h2 class="pname">${p.n}</h2></div>
  <div class="sect"><p>${p.d}</p></div>
- ${PH[id]?"":`<p class="src">Проверенного фото этой детали пока нет, поэтому показано не оно.</p>`}
- ${note?`<div class="banner"><div class="lab" style="color:var(--hot);margin-bottom:3px">На этом поколении</div>${note}${srcHTML(["dr","ko"])}</div>`:""}
+ ${PH[id]&&!(g.real||{})[id]?`<details class="facts"><summary>Показать похожую деталь с другой машины</summary><img src="${imgURL(id,500)}" alt="" loading="lazy"><p class="src">Это не с ${state.model==="accent"?"Accent":"этой машины"}. ${credit(id)}</p></details>`:(g.real||{})[id]?"":`<p class="src">Фото этой детали пока нет.</p>`}
+ ${note?`<div class="banner"><div class="lab" style="color:var(--hot);margin-bottom:3px">На этом поколении</div>${note}${srcHTML(g.psrc||["dr","ko"])}</div>`:""}
  ${p.w?`<div class="banner stop">${p.w}</div>`:""}
- ${(LINKS[id]||[]).length?`<div class="sect"><div class="lab">Как соединено</div><div class="conn">${LINKS[id].map(([t,v])=>`<button data-p="${t}">${PH[t]?`<img src="${imgURL(t,330)}" alt="" loading="lazy">`:""}<span>${PARTS[t].n}</span><small>${v}</small></button>`).join("")}</div></div>`:""}
+ ${(LINKS[id]||[]).some(x=>!hidden(x[0]))?`<div class="sect"><div class="lab">Как соединено</div><div class="conn">${LINKS[id].filter(x=>!hidden(x[0])).map(([t,v])=>`<button data-p="${t}"><span>${PARTS[t].n}</span><small>${v}</small></button>`).join("")}</div></div>`:""}
+ ${g.d2&&g.d2[id]?`<div class="sect"><div class="lab">Как это делали владельцы, с фото на Drive2</div><div class="d2l">${d2Links(g.d2[id])}</div></div>`:""}
  <div class="sect"><div class="lab">Признаки неисправности</div><ul>${p.f.map(x=>`<li>${x}</li>`).join("")}</ul></div>
  <div class="sect"><div class="lab">Что проверить</div><ul>${p.c.map(x=>`<li>${x}</li>`).join("")}</ul></div>
  <p class="src">Моменты затяжки и артикулы здесь не указаны. Смотрите заводское руководство под ваш VIN.</p>`}
@@ -865,8 +923,8 @@ function renderRepair(pb){
  if(state.sym){const s=symById(state.sym);pb.innerHTML=`<button class="back" id="bk">← Все симптомы</button>
   <div><div class="sev ${s.sev}">${s.L}</div><h2 class="pname">${s.t}</h2></div>
   <div class="sect"><div class="lab">С чего начать</div><ol>${s.s.map(x=>`<li>${x}</li>`).join("")}</ol></div>
-  <div class="sect"><div class="lab">Что смотреть, по порядку</div><div class="conn">${s.p.map(id=>`<button data-p="${id}">${PH[id]?`<img src="${imgURL(id,330)}" alt="" loading="lazy">`:""}<span>${PARTS[id].n}</span><small>${SYS[PARTS[id].s][0]}</small></button>`).join("")}</div></div>
-  ${s.g?srcHTML(["dr","ko"]):""}<div class="banner stop">${SAFETY}</div>`;
+  <div class="sect"><div class="lab">Что смотреть, по порядку</div><div class="conn">${s.p.filter(id=>!hidden(id)).map(id=>`<button data-p="${id}"><span>${PARTS[id].n}</span><small>${SYS[PARTS[id].s][0]}</small></button>`).join("")}</div></div>
+  ${s.g?srcHTML(state.gen.psrc||["dr","ko"]):""}<div class="banner stop">${SAFETY}</div>`;
   $("#bk",pb).onclick=()=>{state.sym=null;applyVisibility();renderPanel()};pb.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>selectPart(b.dataset.p));return}
  const own=SYMPTOMS.filter(s=>s.g&&g.extra&&g.extra.includes(s.id)),gen=SYMPTOMS.filter(s=>!s.g);
  const tile=s=>`<button data-y="${s.id}"><span class="sev ${s.sev}">${s.L}</span><span>${s.t}</span></button>`;
