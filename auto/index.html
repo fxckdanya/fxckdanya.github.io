@@ -1,0 +1,883 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Автоветка</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Russo+One&display=swap">
+<style>
+/* Концепция: синька инженера и ветка исследований из танковой игры. Одна тема, тёмная по замыслу. */
+:root{
+  color-scheme:dark;
+  --bg:#0f2433; --bg2:#132c3e; --line:#2b4c63; --line2:#3f6780;
+  --fg:#e6eef3; --mut:#9db4c3; --hot:#ff8f33; --hot-ink:#1c1206; --link:#8ed0f2;
+  --stop:#ff7468; --care:#f1c35c; --ok:#79d4a4;
+  --disp:"Russo One","Arial Narrow",system-ui,sans-serif;
+  --body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--body);display:flex;flex-direction:column;min-height:100%}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
+a{color:var(--link)}
+:focus-visible{outline:2px solid var(--hot);outline-offset:2px}
+h1,h2,h3{margin:0;font-weight:400;text-wrap:balance}
+.lab{font:500 11px/1.3 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--mut)}
+.top{border-bottom:1px solid var(--line);background:var(--bg2);display:flex;align-items:center;gap:8px 18px;flex-wrap:wrap;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.logo{font:18px/1 var(--disp);letter-spacing:.03em}
+.logo b{color:var(--hot);font-weight:400}
+.crumbs{display:flex;flex-wrap:wrap;gap:2px 6px;font:13px/1.4 var(--mono);color:var(--mut);min-width:0}
+.crumbs button{color:var(--link)}
+.crumbs button:hover{text-decoration:underline}
+main{flex:1;min-height:0;display:flex;flex-direction:column}
+
+/* Дерево */
+.tree{display:grid;grid-template-columns:190px minmax(0,1fr);flex:1}
+.nations{border-right:1px solid var(--line);padding:18px 0;display:flex;flex-direction:column;gap:2px}
+.nations .lab{padding:0 16px 8px max(16px,env(safe-area-inset-left,0px))}
+.nation{display:flex;align-items:center;gap:10px;padding:9px 16px 9px max(16px,env(safe-area-inset-left,0px));border-left:3px solid transparent;color:var(--mut)}
+.nation i{font:500 12px var(--mono);font-style:normal;width:26px;text-align:center;border:1px solid var(--line2);padding:1px 0}
+.nation:hover{background:var(--bg2);color:var(--fg)}
+.nation[aria-current=true]{background:var(--bg2);color:var(--fg);border-left-color:var(--hot)}
+.nation small{margin-left:auto;font:11px var(--mono);color:var(--mut)}
+.branch{padding-block:20px 32px;padding-left:24px;padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:26px;min-width:0}
+.tier h2{font:20px/1.2 var(--disp);margin-bottom:10px}
+.row{display:flex;flex-wrap:wrap;gap:10px}
+.tile{width:172px;background:var(--bg2);border:1px solid var(--line2);padding:11px 13px;display:flex;flex-direction:column;gap:3px;border-radius:2px}
+.tile strong{font:400 17px/1.2 var(--disp)}
+.tile span{font-size:12.5px;color:var(--mut)}
+.tile:hover:not(:disabled){border-color:var(--hot)}
+.tile[aria-current=true]{border-color:var(--hot);box-shadow:inset 0 0 0 1px var(--hot)}
+.tile:disabled{opacity:.5;cursor:default;border-style:dashed}
+.note{color:var(--mut);max-width:68ch;font-size:14px}
+.chain-wrap{overflow-x:auto;padding-bottom:6px}
+.chain{display:flex;gap:30px;width:max-content;list-style:none;margin:0;padding:0}
+.chain li{position:relative}
+.chain li+li::before{content:"";position:absolute;left:-30px;top:50%;width:24px;border-top:2px solid var(--line2)}
+.chain li+li::after{content:"";position:absolute;left:-10px;top:calc(50% - 5px);border-left:8px solid var(--line2);border-top:6px solid transparent;border-bottom:6px solid transparent}
+.gen{width:184px;background:var(--bg2);border:1px solid var(--line2);padding:10px 12px 12px;display:grid;gap:3px;border-radius:2px}
+.gen:hover{border-color:var(--hot);background:#17344a}
+.gen .h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.gen .tn{font:22px/1 var(--disp);color:var(--hot)}
+.gen .code{font:500 13px var(--mono);color:var(--fg)}
+.gen svg{width:100%;height:auto;display:block;margin:4px 0 2px}
+.gen svg path,.gen svg circle{fill:var(--line2)}
+.gen .y{font:500 14px var(--mono);font-variant-numeric:tabular-nums}
+.gen .st{font-size:12px;color:var(--mut)}
+.gen .st.full{color:var(--hot)}
+.foot{border-top:1px solid var(--line);color:var(--mut);font-size:13px;padding-block:12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* Машина */
+.car{display:grid;grid-template-columns:minmax(0,1fr) 420px;flex:1;min-height:0}
+.stage{position:relative;min-height:0;background:var(--bg);overflow:hidden}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+#gl.drag{cursor:grabbing}
+.zones{position:absolute;left:max(12px,env(safe-area-inset-left,0px));top:12px;right:12px;display:flex;flex-wrap:wrap;gap:6px;pointer-events:none}
+.zones button{pointer-events:auto;background:rgba(19,44,62,.92);border:1px solid var(--line2);padding:6px 11px;font-size:13px;border-radius:2px}
+.zones button:hover{border-color:var(--fg)}
+.zones button[aria-pressed=true]{background:var(--hot);color:var(--hot-ink);border-color:var(--hot);font-weight:600}
+.stamp{position:absolute;right:12px;bottom:12px;border:1px solid var(--line2);background:rgba(15,36,51,.88);font:11px/1.45 var(--mono);padding:6px 9px;color:var(--mut);pointer-events:none;max-width:60%}
+.stamp b{display:block;color:var(--fg);font-weight:500}
+.hint{position:absolute;left:max(12px,env(safe-area-inset-left,0px));bottom:12px;font-size:12px;color:var(--mut);pointer-events:none;max-width:36%}
+#tip{position:absolute;pointer-events:none;background:var(--fg);color:var(--bg);font-size:12.5px;font-weight:500;padding:2px 7px;border-radius:2px;white-space:nowrap;transform:translate(10px,-26px)}
+.nogl{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--mut)}
+.panel{border-left:1px solid var(--line);background:var(--bg2);display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.tabs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line);flex:none}
+.tabs button{padding:12px 8px;text-align:center;font:15px var(--disp);color:var(--mut);border-bottom:3px solid transparent}
+.tabs button:hover{color:var(--fg)}
+.tabs button[aria-selected=true]{color:var(--fg);border-bottom-color:var(--hot)}
+.pbody{overflow-y:auto;flex:1;min-height:0;padding-block:14px 22px;padding-left:16px;padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px}
+.pbody>*{min-width:0;flex:none}
+.gname{font:21px/1.2 var(--disp)}
+.gyears{font:500 14px var(--mono);color:var(--hot)}
+details.facts{border:1px solid var(--line);padding:8px 11px}
+details.facts summary{cursor:pointer;font-size:13.5px;color:var(--link)}
+.dl{display:grid;gap:7px;margin-top:9px;font-size:13.5px}
+.dl div span{display:block}
+.banner{border:1px solid var(--line2);padding:9px 11px;font-size:13.5px}
+.banner.warn{border-color:var(--care)}
+.banner.stop{border-color:var(--stop)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);padding:3px 8px;font-size:12.5px;border-radius:2px;color:var(--mut)}
+.chip i{width:9px;height:9px;background:var(--c);display:block;flex:none}
+.chip[aria-pressed=true]{color:var(--fg);border-color:var(--line2)}
+.chip[aria-pressed=false] i{background:none;box-shadow:inset 0 0 0 1px var(--c)}
+input[type=search]{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--line2);color:var(--fg);font:14px var(--body);padding:8px 10px;border-radius:2px}
+input::placeholder{color:var(--mut)}
+.plist{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+.plist button{background:var(--bg2);padding:7px 10px;display:flex;align-items:center;gap:9px;font-size:14px;width:100%;box-sizing:border-box}
+.plist button:hover{background:#1b3a50}
+.plist i{width:9px;height:9px;background:var(--c);flex:none}
+.plist small{margin-left:auto;font:12px var(--mono);color:var(--mut);flex:none}
+.back{color:var(--link);font-size:13.5px}
+.back:hover{text-decoration:underline}
+.pname{font:20px/1.2 var(--disp)}
+.sect{display:grid;gap:5px}
+.sect ul,.sect ol{margin:0;padding-left:19px;display:grid;gap:4px;font-size:14px}
+.sect p{margin:0;font-size:14px}
+.conn{display:grid;gap:4px}
+.conn button{border:1px solid var(--line);padding:6px 9px;font-size:13.5px;width:100%;box-sizing:border-box}
+.conn button:hover{border-color:var(--hot)}
+.conn small{display:block;color:var(--mut);font-size:12.5px}
+.sym{display:grid;gap:6px}
+.sym>button{border:1px solid var(--line);padding:9px 11px;display:grid;gap:3px;width:100%;box-sizing:border-box}
+.sym>button:hover{border-color:var(--hot)}
+.sev{font:500 11px/1.3 var(--mono);letter-spacing:.05em;text-transform:uppercase}
+.sev.stop{color:var(--stop)}.sev.care{color:var(--care)}.sev.ok{color:var(--ok)}
+.src{font-size:12.5px;color:var(--mut)}
+.gen img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block;margin:5px 0 3px;background:var(--bg)}
+.photo{position:absolute;inset:0;container-type:size;display:grid;place-items:center;background:#0a1a25}
+.photo>img{width:100%;height:100%;object-fit:contain;display:block}
+.pwrap{position:relative;width:min(100cqw,calc(100cqh*var(--r)));aspect-ratio:var(--r)}
+.pwrap img{width:100%;height:100%;display:block}
+.spot{position:absolute;transform:translate(-9px,-9px);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.spot i{width:18px;height:18px;border-radius:50%;background:var(--hot);border:3px solid #fff;box-sizing:border-box;box-shadow:0 0 0 2px rgba(0,0,0,.55);flex:none}
+.spot span{background:rgba(10,26,37,.88);color:#fff;font-size:12.5px;padding:2px 7px;border-radius:2px}
+.spot.flip{flex-direction:row-reverse;transform:translate(calc(-100% + 9px),-9px)}
+.spot:hover span{background:var(--hot);color:var(--hot-ink)}
+.cap{position:absolute;left:max(12px,env(safe-area-inset-left,0px));bottom:12px;right:12px;font-size:12.5px;color:#e6eef3;pointer-events:none}
+.cap span{background:rgba(10,26,37,.86);padding:3px 8px;display:inline-block;max-width:100%;box-sizing:border-box}
+.cap a{pointer-events:auto}
+.mode{position:absolute;right:max(12px,env(safe-area-inset-right,0px));top:52px;display:flex}
+.mode button{background:rgba(19,44,62,.92);border:1px solid var(--line2);padding:5px 10px;font-size:12.5px}
+.mode button[aria-pressed=true]{background:var(--fg);color:var(--bg)}
+.plist img{width:44px;height:32px;object-fit:cover;flex:none;display:block;background:var(--bg)}
+.plist .noimg{width:44px;height:32px;flex:none;display:grid;place-items:center;border:1px dashed var(--line2);box-sizing:border-box}
+.conn button{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:9px;align-items:center}
+.conn img{width:52px;height:38px;object-fit:cover;grid-row:span 2;display:block}
+.conn small{grid-column:2}
+.conn button>span{grid-column:2}
+.credits{padding-block:20px 32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:12px;max-width:900px}
+.credits h1{font:22px/1.2 var(--disp)}
+.credits ul{margin:0;padding-left:18px;display:grid;gap:3px;font-size:13.5px}
+.footlink{color:var(--link);text-decoration:underline}
+@media (max-width:640px){.spot span{display:none}}
+@media (max-width:900px){
+  html,body{height:auto}
+  .car{display:flex;flex-direction:column}
+  .stage{height:56vh;min-height:320px;flex:none}
+  .panel{border-left:0;border-top:1px solid var(--line);overflow:visible}
+  .pbody{overflow:visible;padding-left:max(16px,env(safe-area-inset-left,0px))}
+  .hint{display:none}
+  .stamp{max-width:calc(100% - 24px)}
+}
+@media (max-width:640px){
+  .tree{display:block}
+  .nations{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line);padding:0}
+  .nations .lab{display:none}
+  .nation{flex:none;padding:10px 12px;border-left:0;border-bottom:3px solid transparent}
+  .nation[aria-current=true]{border-left:0;border-bottom-color:var(--hot)}
+  .nation small{display:none}
+  .branch{padding-left:max(16px,env(safe-area-inset-left,0px))}
+  .tile{width:calc(50% - 5px);box-sizing:border-box}
+  .chain{flex-direction:column;width:100%;gap:22px}
+  .gen{width:100%;box-sizing:border-box}
+  .gen svg{max-width:190px}
+  .chain li+li::before{left:50%;top:-22px;width:0;height:16px;border-top:0;border-left:2px solid var(--line2)}
+  .chain li+li::after{left:calc(50% - 5px);top:-8px;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--line2);border-bottom:0}
+}
+</style>
+
+</head><body>
+<header class="top">
+  <button class="logo" id="home">АВТО<b>ВЕТКА</b></button>
+  <nav class="crumbs" id="crumbs" aria-label="Путь по ветке"></nav>
+</header>
+<main id="app"></main>
+
+<script>
+"use strict";
+/* ─────────── Настоящие фото: Wikimedia Commons ─────────── */
+/* [путь хэша, имя файла, автор, лицензия] */
+const PH={
+ ax3:["e/ed","%2795-%2797_Hyundai_Accent_Sedan.jpg","Bull-Doser","Public domain"],
+ alc:["2/20","03-05_Hyundai_Accent_hatchback.jpg","IFCAR","Public domain"],
+ amc:["5/58","06-08_Hyundai_Accent.jpg","IFCAR","Public domain"],
+ arb:["c/c3","20110402_hyundai_accent_wit_001.jpg","Chu","CC BY-SA 3.0"],
+ ahc:["6/6f","2019_Hyundai_Accent_Preferred_in_Urban_Grey%2C_Front_Left%2C_05-22-2022.jpg","Elise240SX","CC BY-SA 4.0"],
+ abn:["4/41","Hyundai_Accent_1.5_MPI_Smart%2B_%28VI%29_%E2%80%93_f_08032025.jpg","M 93","CC BY-SA 3.0 de"],
+ srb:["7/7c","Delimobil_carsharing_car_in_Moscow.jpg","Stolbovsky","CC BY-SA 3.0"],
+ shc:["4/47","Hyundai_Solaris_%28HCR%29_en_Tjumeno.jpg","RG72","CC BY-SA 4.0"],
+ rdc:["7/78","2003-2005_Kia_Rio.jpg","IFCAR","Public domain"],
+ rjb:["a/a9","%2709_Kia_Rio5_%28Front%2C_MIAS%29.JPG","Bull-Doser","Public domain"],
+ rqb:["4/4e","Kia_Rio_sedan_%28Russia%29_%28Front%29.jpg","Peterolthof","CC BY-SA 4.0"],
+ ryb:["6/60","2018_Kia_Rio_EX_-_Side.jpg","Areaseven","CC BY-SA 4.0"],
+ z_hood:["d/d2","2018_Kia_Rio_LX_-_Engine.jpg","Areaseven","CC BY-SA 4.0"],
+ z_cabin:["6/6b","2017_Kia_Rio_Interior.jpg","Vauxford","CC BY-SA 4.0"],
+ engine:["0/08","Gamma_1.6_MPi.jpg","Alawadhi3000","CC BY-SA 4.0"],
+ timing:["c/c0","Wiki_66_SOHC_timing_chain_and_cam.jpg","FordFE com","Public domain"],
+ belt:["d/d2","Keilrippenriemen_Servopumpe_Spannrollen_VW_T4_IMG_20160922_135213.jpg","Hans Haase","CC BY-SA 4.0"],
+ oil:["5/52","Bosch_Oil_Filter.JPG","Schumi4ever","CC BY-SA 4.0"],
+ intake:["0/0b","Throttle_body.jpg","M100","Public domain"],
+ coils:["d/d9","Ignition_coil_module.jpg","Cschirp","CC BY-SA 3.0 de"],
+ ecu:["9/93","Motronic-Steuerger%C3%A4t.JPG","Mib18","CC BY-SA 3.0"],
+ fuses:["1/14","Understanding_car_fuse_box_components_and_their_arrangement_in_a_vehicle_engine_bay_at_midday.jpg","Shixart1985","CC BY 2.0"],
+ battery:["d/d8","Super_Start_Premium_Car_Battery.jpg","TaurusEmerald","CC BY-SA 4.0"],
+ alternator:["3/3e","Automotive_alternator._Terminals.jpg","Zinnsoldat","CC BY-SA 3.0"],
+ fan:["3/3f","RADIATOR_FAN.jpg","Nadinviki","CC BY-SA 4.0"],
+ thermostat:["0/0e","Replacement_Thermostat.jpg","Hoikka1","CC BY-SA 3.0"],
+ hoses:["8/88","Radiator_Hose_on_Rusted_Bed_Springs_%2846017879962%29.jpg","Chris Hunkeler","CC BY-SA 2.0"],
+ gearbox:["7/74","Porsche_971_Panamera_ZF_Gearbox_IAA_2019_JM_0639.jpg","Johannes Maximilian","CC BY-SA 4.0"],
+ clutch:["e/eb","Clutch_%287097579175%29.jpg","Tino Rossini","CC BY 2.0"],
+ shifter:["8/88","Audi_RS4_Avant_Gear_Knob_%288560986619%29.jpg","Shawn Jooste","CC BY 2.0"],
+ shafts:["a/a9","CV_Joint_with_broken_tone_ring.JPG","Kiwiev","CC0"],
+ strut:["f/fe","Federbein.JPG","Bukk","Public domain"],
+ subframe:["b/bc","Tesla_Model_S_subframe_front_01.jpg","Alison Cassidy","CC BY-SA 3.0"],
+ sway:["d/d9","88_IROC_Painted_Rear_Sway_Bar.jpg","Nick Ares","CC BY-SA 2.0"],
+ beam:["b/bd","VW_Golf_Mk_1_U_shaped_twist_beam_front.jpg","Soyuz72","CC BY-SA 4.0"],
+ rshock:["c/c7","Emw340-stossd%C3%A4mpfer-hinten.jpg","Harald Spiegel","Public domain"],
+ wheels:["f/f1","Jaguar_XF_Nevis_%2820%22%29_alloy_wheel.jpg","Magnus Bäck","Public domain"],
+ fbrake:["9/9b","Porsche-Scheibenbremse_rechts_vorne%2C_4.jpeg","Renardo la vulpo","CC BY-SA 4.0"],
+ rbrake:["f/ff","Drum_brake_1950s_Beetle.jpg","Palauenc05","CC BY-SA 4.0"],
+ mc:["c/c4","Brake_master_cylinder_and_reservoir.JPG","Ballista","CC BY-SA 3.0"],
+ rack:["c/cb","Power_steering_rack.jpg","l0lnix","CC BY 2.0"],
+ steering:["4/4b","Steering_Wheel_-_2013_Hyundai_Santa_Fe_Launch_Event_%287872773472%29.jpg","Michael Sheehan","CC BY 2.0"],
+ pedals:["6/68","Car_pedals_20180814.jpg","Santeri Viinamäki","CC BY-SA 4.0"],
+ exhcat:["0/06","Catalytic_converter_%284293629922%29.jpg","Oak Ridge National Laboratory","CC BY 2.0"],
+ seats:["3/3f","Car_Seats_Designed_By_Mario_Kleff.jpg","Mario Kleff","CC BY-SA 4.0"],
+ dash:["6/6b","2017_Kia_Rio_Interior.jpg","Vauxford","CC BY-SA 4.0"],
+ hvac:["5/52","BMW_E32_heater_core.jpg","Rpvdk","Public domain"],
+ lights:["3/3d","Close_view_of_a_car_headlight_with_condensation_on_a_black_vehicle_parked.jpg","Shixart1985","CC BY 2.0"],
+ spare:["d/d0","SEAT_Leon_Mk1_spare_wheel.jpg","Mike Ratz","CC BY-SA 3.0"]
+};
+const imgURL=(k,w=500)=>{const a=PH[k];return `https://thumb.wikimedia.org/wikipedia/commons/thumb/${a[0]}/${a[1]}/${w}px-${a[1]}`};
+const pageURL=k=>"https://commons.wikimedia.org/wiki/File:"+PH[k][1];
+const credit=k=>`Фото: <a href="${pageURL(k)}" target="_blank" rel="noopener">${PH[k][2]}</a>, ${PH[k][3]}`;
+/* Подписи на настоящем моторном отсеке и салоне. Точки поставлены по виду снимка, сверяйте с руководством. */
+const SPOTS={
+ hood:{r:500/281,k:"z_hood",n:"Kia Rio 2018. На другом поколении расположение может отличаться.",s:[["engine",38,47,"Двигатель"],["oil",25,43,"Масляная горловина"],["intake",35,78,"Впускной коллектор"],["alternator",20,82,"Генератор",0],["mc",67,22,"Бачок тормозов"],["battery",83,44,"Аккумулятор",1],["radiator",67,83,"Пробка радиатора"]]},
+ cabin:{r:500/333,k:"z_cabin",n:"Kia Rio 2017, правый руль. На другом поколении салон отличается.",s:[["steering",83,49,"Руль",1],["dash",48,42,"Торпедо"],["hvac",48,65,"Климат"],["shifter",48,85,"Рычаг КПП"]]},
+ trunk:{k:"spare",n:"Ниша запаски, SEAT Leon. Показано как пример."},
+ under:{k:"beam",n:"Задняя балка снизу, VW Golf. Показано как пример."}
+};
+
+/* ─────────── Каталог ─────────── */
+const SRC={
+  hb:["hyundaibook.ru","https://www.hyundaibook.ru/en/Accent"],
+  wa:["Wikipedia: Hyundai Accent","https://ipfs.ssi.eecc.de/ipns/en.wikipedia-on-ipfs.org/wiki/Hyundai_Accent"],
+  wr:["Wikipedia: Kia Rio","https://en.wikipedia.org/wiki/Kia_Rio"],
+  dr:["Дром: Solaris и Rio I","https://www.drom.ru/info/misc/hyundai-solaris-kia-rio-85699.html"],
+  ko:["Колёса.ру: гид по Solaris I","https://www.kolesa.ru/article/vybor-bolshe-tseny-te-zhe-gid-po-pokupke-hyundai-solaris-i"],
+  w1:["www1.ru: конец сборки Solaris HS","https://www1.ru/en/news/2025/09/13/proshhai-hyundai-solaris-sborka-solaris-hs-polnostiu-prekratilas-na-smenu-prixodit-solaris-krs-b.html"],
+  m1:["Motor1: Hyundai Verna 2023","https://www.motor1.com/news/658416/2023-hyundai-verna-debut-specs/"],
+  sc:["South Charlotte Hyundai","https://www.southcharlottehyundai.com/hyundai-accent-generations-all-model-years.htm"]
+};
+const GAMMA={
+  drive:"Цепь. Колёса.ру оценивает её ресурс примерно в 120 тыс. км.",
+  notes:{
+    timing:"Цепной привод. Гидрокомпенсаторов нет, поэтому зазоры клапанов проверяют отдельно: стук проявляется быстро, если обслуживанием пренебрегали.",
+    exhcat:"Главное слабое место поколения. Керамика катализатора крошится, пыль попадает в цилиндры: задиры, расход масла, капремонт. Проверка: сканер, давление, компрессия, эндоскоп через свечные колодцы.",
+    gearbox:"До рестайлинга: механика M5CF1 или автомат A4CF1. После: механика M6CF1, с мотором 1.6 автомат A6GF1. M5CF1 плохо держала момент мотора 1.6. Автоматам вредит редкая замена масла и перегрев.",
+    column:"На машинах до рестайлинга вал без шлицевого соединения: подрамник проседает, руль начинает вращаться туго и рывками. После рестайлинга это устранено.",
+    rbrake:"Сзади часто стоят барабаны. Диски и шланги тоже стоит осмотреть.",
+    fuses:"Окисление шлейфа к автомату заставляет коробку работать неправильно. Сначала проверяют разъём, потом саму АКПП."
+  },
+  extra:["cat","chain","tug","sh"]
+};
+const G=(tier,code,y,body,eng,src,o={})=>({tier,code,y,body,eng,src,...o});
+const NATIONS=[
+ {id:"korea",c:"KR",n:"Корея",makes:[
+  {id:"hyundai",n:"Hyundai",models:[
+   {id:"accent",n:"Accent",alt:"Verna, Excel, Pony",gens:[
+    G("I","X3","1994–1999","Хэтчбек 3 и 5 дв., седан, малая партия купе","Бензин 1.3, 1.5, 1.6",["hb","wa"],{note:"Годы для Кореи. На других рынках выпускали до 2006."}),
+    G("II","LC","1999–2005","Хэтчбек 3 и 5 дв., седан","Бензин 1.3, 1.4, 1.5, 1.6; дизель 1.5",["hb","wa"],{note:"В России и Индонезии собирали с 2001 по 2012. Рестайлинг 2003 года называется LC2."}),
+    G("III","MC","2005–2010","Седан, хэтчбек 3 дв.","Бензин 1.4, 1.6; дизель 1.5",["hb","wa"],{note:"В Индии выпускали до 2011."}),
+    G("IV","RB","2010–2017","Седан, хэтчбек 5 дв.","Бензин 1.4 и 1.6; дизель 1.4 и 1.6",["hb","wa","dr","ko"],{...GAMMA,note:"Источники расходятся в конце выпуска: 2017 или 2019, зависит от рынка. В России это Solaris. Замечания по ремонту собраны именно по российскому Solaris, на других рынках моторы и коробки могут отличаться."}),
+    G("V","HC / YC","2017–2023","Седан, хэтчбек 5 дв.","Бензин 1.0 турбо, 1.4, 1.5, 1.6; дизель 1.5",["wa","hb","sc"],{note:"Источники расходятся в начале: Wikipedia даёт 2017 (в Китае 2016), hyundaibook даёт 2018. Американский дилер указывает модельные годы до 2022. Следующее поколение вышло в 2023, на части рынков сроки могут отличаться. В России это Solaris."}),
+    G("VI","BN7","с 2023","Седан","Бензин 1.5; полный список моторов по рынкам пока не заполнен",["m1"],{note:"Дебютировал в 2023 как Hyundai Verna в Индии."})
+   ]},
+   {id:"solaris",n:"Solaris",alt:"российское имя Accent",gens:[
+    G("I","RB","2010–2017","Седан, хэтчбек","Бензин 1.4 на 100 л.с., 1.6 на 123 л.с.",["dr","ko","wa"],{...GAMMA,note:"Дебют в 2010, продажи с 2011, рестайлинг в 2014."}),
+    G("II","HC","2017–2025","Седан","Бензин 1.4, 1.6",["wa","w1"],{note:"Последние машины выпускались под маркой Solaris как Solaris HS. По сборке в 2025 году смотрите источник www1.ru."})
+   ]},
+   {n:"Elantra"},{n:"Getz"},{n:"Sonata"},{n:"Creta"}
+  ]},
+  {id:"kia",n:"Kia",models:[
+   {id:"rio",n:"Rio",alt:"K2 в Китае",gens:[
+    G("I","DC","1999–2005","Седан, универсал","Бензин 1.3, 1.5, 1.6",["wr"],{note:"Rio выпускается с ноября 1999. Год смены поколения зависит от рынка."}),
+    G("II","JB","2005–2011","Седан, хэтчбек","Бензин 1.4, 1.6; дизель 1.5",["wr"],{note:"В Европе с начала 2005, в Северной Америке с 2006 модельного года."}),
+    G("III","UB / QB","2011–2017","Седан, хэтчбек","Для России QB: бензин 1.4, 1.6",["wr","dr","ko"],{...GAMMA,note:"Российская версия QB собиралась в Санкт-Петербурге с 15 августа 2011. Замечания по ремонту относятся к ней."}),
+    G("IV","YB / FB","2017–2023","Седан, хэтчбек","Для России FB: бензин 1.4, 1.6",["wr"],{note:"Российская версия FB с 4 июля 2017. Производство Rio в целом указано до декабря 2023."})
+   ]},
+   {n:"Ceed"},{n:"Cerato"},{n:"Sportage"},{n:"Soul"}
+  ]},
+  {n:"Genesis"},{n:"SsangYong"},{n:"Daewoo"}
+ ]},
+ {id:"japan",c:"JP",n:"Япония",makes:[{n:"Toyota"},{n:"Nissan"},{n:"Honda"},{n:"Mazda"},{n:"Mitsubishi"},{n:"Subaru"},{n:"Suzuki"}]},
+ {id:"germany",c:"DE",n:"Германия",makes:[{n:"Volkswagen"},{n:"BMW"},{n:"Mercedes-Benz"},{n:"Audi"},{n:"Opel"}]},
+ {id:"russia",c:"RU",n:"Россия",makes:[{n:"Lada"},{n:"УАЗ"},{n:"ГАЗ"}]},
+ {id:"usa",c:"US",n:"США",makes:[{n:"Ford"},{n:"Chevrolet"},{n:"Jeep"},{n:"Dodge"}]},
+ {id:"france",c:"FR",n:"Франция",makes:[{n:"Renault"},{n:"Peugeot"},{n:"Citroën"}]},
+ {id:"czech",c:"CZ",n:"Чехия",makes:[{n:"Škoda"}]},
+ {id:"china",c:"CN",n:"Китай",makes:[{n:"Chery"},{n:"Geely"},{n:"Haval"}]}
+];
+
+/* ─────────── Детали типовой схемы ─────────── */
+const SYS={
+ engine:["Двигатель","#d5dde5"],trans:["Трансмиссия","#7fa5d6"],susp:["Подвеска","#6ecba7"],brake:["Тормоза","#e8796c"],
+ steer:["Рулевое","#b79cec"],cool:["Охлаждение","#55bdf0"],fuel:["Топливо и выхлоп","#c9a56b"],elec:["Электрика","#efe39a"],
+ cabin:["Салон","#8fa0b0"],trunk:["Багажник","#a9bda4"]
+};
+const ZONES=[["all","Вся машина"],["hood","Под капотом"],["cabin","Салон"],["trunk","Багажник"],["under","Днище"]];
+const CAM={all:{t:[0,.55,0],d:6.6,y:.75,p:.33},hood:{t:[1.45,.62,0],d:3.0,y:.5,p:.62},cabin:{t:[.1,.72,0],d:3.9,y:1.35,p:.55},trunk:{t:[-1.6,.6,0],d:3.0,y:2.55,p:.55},under:{t:[0,.3,0],d:6,y:.6,p:-.62}};
+const PARTS={
+ engine:{n:"Двигатель: блок и ГБЦ",s:"engine",z:"hood",
+  d:"Рядная четвёрка стоит поперёк. В блоке ходят поршни и вращается коленвал, в головке работают клапаны и распредвалы.",
+  l:[["gearbox","Болты по фланцу картера"],["exhcat","Выпускной коллектор, шпильки и прокладка"],["intake","Впускной коллектор, прокладка"]],
+  f:["Падение тяги и троение","Сизый дым и расход масла","Глухой стук в нижней части мотора"],c:["Замер компрессии","Осмотр цилиндров эндоскопом","Уровень и состояние масла"],
+  g(g){g.box(1.52,.57,.02,.34,.36,.5);g.box(1.52,.78,.02,.3,.1,.48);g.box(1.52,.86,.02,.22,.06,.4)}},
+ timing:{n:"Привод ГРМ",s:"engine",z:"hood",
+  d:"Синхронизирует коленвал и распредвалы, чтобы клапаны открывались вовремя. Бывает цепным или ременным, это зависит от мотора.",
+  l:[["engine","Звёздочки или шкивы на коленвале и распредвалах"],["oil","Натяжитель цепи работает от давления масла"]],
+  f:["Шелест или лязг цепи на холодную","Ошибка рассогласования валов","Мотор не заводится после обрыва"],c:["Проверить тип привода по коду двигателя","Сверить метки по мануалу"],w:"При обрыве мотор может повредить клапаны. Крутить стартером не надо.",
+  g(g){g.sweep([[1.46,.84],[1.58,.84],[1.57,.44],[1.48,.4]].map(a=>[a[0],a[1],.3]),.009,6,true);g.cyl([1.46,.82,.285],[1.46,.82,.315],.05);g.cyl([1.58,.82,.285],[1.58,.82,.315],.05);g.cyl([1.52,.42,.285],[1.52,.42,.315],.05)}},
+ belt:{n:"Ремень навесного оборудования",s:"engine",z:"hood",
+  d:"Передаёт вращение с коленвала на генератор, помпу и компрессор кондиционера.",
+  l:[["alternator","Шкив генератора"],["pump","Шкив помпы"],["ac","Шкив компрессора"]],
+  f:["Свист на холодную и при включении нагрузки","Трещины и бахрома на ремне","Лампа зарядки и перегрев после обрыва"],c:["Осмотр ремня на заглушенном моторе","Проверка натяжения и роликов"],
+  g(g){g.sweep([[1.52,.34],[1.84,.44],[1.82,.56],[1.62,.74],[1.5,.5]].map(a=>[a[0],a[1],.36]),.012,6,true)}},
+ mounts:{n:"Опоры двигателя",s:"engine",z:"hood under",
+  d:"Резинометаллические подушки держат мотор с коробкой на кузове и гасят вибрацию.",
+  l:[["engine","Кронштейны на болтах"],["gearbox","Опора на корпусе коробки"],["subframe","Нижняя тяга на подрамнике"]],
+  f:["Вибрация на холостом ходу и на D","Удар при трогании и переключении"],c:["Осмотр резины на разрывы","Качание мотора помощником"],
+  g(g){g.cyl([1.52,.74,.32],[1.52,.74,.44],.05);g.cyl([1.45,.66,-.62],[1.45,.66,-.72],.05);g.cyl([1.24,.28,.02],[1.36,.31,.02],.04)}},
+ oil:{n:"Масляная система: поддон и фильтр",s:"engine",z:"hood under",
+  d:"Масло подаётся насосом из поддона через фильтр к трущимся деталям. Отсюда же работают натяжитель и фазовращатель, если он есть.",
+  l:[["engine","Поддон на герметике, болты"],["timing","Давление масла на натяжитель"]],
+  f:["Красная лампа давления","Подтёки на поддоне","Масло чёрное или с запахом топлива"],c:["Щуп на ровном месте, мотор заглушен","Замер давления манометром"],w:"Красная лампа давления масла: сразу заглушите мотор.",
+  g(g){g.box(1.52,.34,.02,.3,.1,.46);g.cyl([1.7,.44,-.12],[1.8,.42,-.12],.04)}},
+ intake:{n:"Впуск: фильтр, дроссель, коллектор",s:"engine",z:"hood",
+  d:"Воздух проходит через фильтр и датчик, дроссель дозирует его, коллектор раздаёт по цилиндрам.",
+  l:[["engine","Коллектор на шпильках"],["ecu","Разъёмы дросселя и датчиков"],["tank","Топливная рампа на коллекторе"]],
+  f:["Плавающие обороты","Провалы при нажатии на газ","Подсос воздуха: шипение"],c:["Состояние воздушного фильтра","Гофра на трещины","Ошибки сканером"],
+  g(g){g.box(1.75,.81,-.52,.26,.12,.3);g.sweep([[1.75,.78,-.38],[1.79,.76,-.3],[1.79,.72,-.22]],.035,12);for(const z of [-.17,-.01,.15,.27-.06])g.sweep([[1.79,.72,-.1],[1.79,.72,z],[1.72,.68,z]],.02,8);g.cyl([1.79,.72,-.26],[1.79,.72,.22],.035)}},
+ coils:{n:"Катушки и свечи зажигания",s:"elec",z:"hood",
+  d:"Катушка делает высокое напряжение, свеча поджигает смесь в цилиндре.",
+  l:[["engine","Свеча вкручена в головку"],["ecu","Разъём управления"]],
+  f:["Троение и вибрация","Мигает Check Engine","Запах бензина из выхлопа"],c:["Считать пропуски сканером","Переставить катушку на другой цилиндр","Осмотреть свечи"],w:"Мигающая лампа при пропусках опасна для катализатора. Снизьте нагрузку и едьте на диагностику.",
+  g(g){for(const z of [-.14,-.03,.07,.18])g.cyl([1.52,.88,z],[1.52,.93,z],.022)}},
+ ecu:{n:"Блок управления двигателем",s:"elec",z:"hood",
+  d:"Считает подачу топлива и момент зажигания по данным датчиков и хранит коды ошибок.",
+  l:[["fuses","Питание через предохранители и реле"],["coils","Сигнал катушкам"],["intake","Сигнал дросселю"],["exhcat","Лямбда-зонды"]],
+  f:["Нет связи со сканером","Много разных ошибок сразу"],c:["Сначала питание, массы и разъёмы, блок в последнюю очередь"],
+  g(g){g.box(1.15,.82,.5,.16,.05,.22)}},
+ fuses:{n:"Предохранители, реле, разъёмы",s:"elec",z:"hood cabin",
+  d:"Блоки защищают цепи от замыкания и коммутируют мощных потребителей. Один блок обычно под капотом, другой в салоне.",
+  l:[["battery","Силовой провод"],["ecu","Питание блока"],["lights","Цепи фар и фонарей"]],
+  f:["Не работает отдельный потребитель","Предохранитель сгорает снова","Зелёный налёт на контактах"],c:["Проверить предохранитель пробником","Номинал только родной"],w:"Не ставьте предохранитель большего номинала: это путь к пожару.",
+  g(g){g.box(1.55,.82,-.74,.18,.08,.14);g.box(.75,.55,-.72,.1,.12,.14)}},
+ battery:{n:"Аккумулятор",s:"elec",z:"hood",
+  d:"Даёт ток стартеру и держит напряжение бортсети при заглушенном моторе.",
+  l:[["starter","Силовой провод, клемма"],["alternator","Заряд через плюсовой провод"],["fuses","Плюс через блок"]],
+  f:["Стартер крутит вяло или щёлкает","Окисленные клеммы","Разряд после стоянки"],c:["Напряжение на заглушенном моторе","Напряжение при работе двигателя","Затяжка клемм"],w:"При снятии первым отключают минус. Рядом с АКБ нельзя искрить.",
+  g(g){g.box(1.3,.76,-.6,.22,.19,.26)}},
+ alternator:{n:"Генератор",s:"elec",z:"hood",
+  d:"При работающем моторе питает бортсеть и заряжает аккумулятор.",
+  l:[["belt","Шкив"],["battery","Силовой провод"],["engine","Кронштейн на болтах"]],
+  f:["Горит лампа АКБ","Тускнеет свет","Гул или вой подшипника"],c:["Напряжение бортсети на оборотах","Ремень и его натяжение"],
+  g(g){g.cyl([1.82,.5,.2],[1.82,.5,.36],.075)}},
+ starter:{n:"Стартер",s:"elec",z:"hood under",
+  d:"Коротко раскручивает маховик, пока мотор не заведётся.",
+  l:[["battery","Толстый плюсовой провод"],["gearbox","Прикручен к картеру коробки, шестерня входит в маховик"]],
+  f:["Один щелчок и тишина","Скрежет при пуске"],c:["Сначала АКБ и массы","Падение напряжения при пуске"],
+  g(g){g.cyl([1.28,.47,-.31],[1.28,.47,-.09],.055)}},
+ radiator:{n:"Радиатор",s:"cool",z:"hood",
+  d:"Отдаёт воздуху тепло охлаждающей жидкости.",
+  l:[["hoses","Верхний и нижний патрубки"],["exptank","Тонкий шланг"],["fan","Диффузор вентилятора на радиаторе"]],
+  f:["Подтёки по сотам или бачкам","Перегрев на скорости","Забитые соты"],c:["Осмотр на холодной машине","Опрессовка системы"],w:"Не открывайте систему на горячем моторе: жидкость под давлением.",
+  g(g){g.box(1.98,.56,0,.04,.42,1.14);g.box(1.98,.56,.6,.06,.44,.06);g.box(1.98,.56,-.6,.06,.44,.06)}},
+ fan:{n:"Вентилятор радиатора",s:"cool",z:"hood",
+  d:"Протягивает воздух через радиатор, когда потока на ходу не хватает.",
+  l:[["radiator","Диффузор"],["fuses","Реле и предохранитель"]],
+  f:["Перегрев в пробке, на трассе нормально","Вентилятор не включается","Шум подшипника"],c:["Смотреть, включается ли при росте температуры","Реле и предохранитель"],
+  g(g){g.cyl([1.92,.56,0],[1.89,.56,0],.2);g.cyl([1.89,.56,0],[1.82,.56,0],.05)}},
+ pump:{n:"Помпа",s:"cool",z:"hood",
+  d:"Гоняет жидкость по рубашке блока и радиатору.",
+  l:[["belt","Шкив"],["hoses","Нижний патрубок"],["engine","Корпус на блоке"]],
+  f:["Подтёк и потёки с запахом антифриза","Вой подшипника","Перегрев при рабочем вентиляторе"],c:["Осмотр дренажного отверстия","Люфт шкива на снятом ремне"],
+  g(g){g.cyl([1.62,.72,.27],[1.62,.72,.37],.05)}},
+ thermostat:{n:"Термостат",s:"cool",z:"hood",
+  d:"Держит мотор на рабочей температуре, открывая большой круг к радиатору.",
+  l:[["hoses","Корпус с патрубком"],["engine","Корпус на блоке или головке"]],
+  f:["Мотор долго греется, печка еле дует","Быстрый перегрев при холодном радиаторе"],c:["Рукой на безопасном патрубке следить за прогревом обоих шлангов"],
+  g(g){g.cyl([1.7,.78,-.27],[1.7,.78,-.2],.04)}},
+ hoses:{n:"Патрубки охлаждения",s:"cool",z:"hood",
+  d:"Резиновые шланги связывают мотор, радиатор и печку.",
+  l:[["radiator","Хомуты"],["pump","Хомут"],["thermostat","Хомут"],["hvac","Шланги через моторный щит к печке"]],
+  f:["Течь у хомута","Вздутый или мягкий шланг"],c:["Осмотреть на холодной машине"],
+  g(g){g.sweep([[1.96,.74,-.25],[1.82,.84,-.25],[1.7,.8,-.24]],.022,10);g.sweep([[1.96,.38,.25],[1.8,.33,.34],[1.66,.55,.38],[1.62,.68,.34]],.022,10);g.sweep([[1.5,.76,-.25],[1.2,.8,-.1],[1.02,.76,.05]],.012,8);g.sweep([[1.96,.74,.3],[1.84,.8,.48],[1.75,.76,.6]],.009,6)}},
+ exptank:{n:"Расширительный бачок",s:"cool",z:"hood",
+  d:"Принимает расширившуюся жидкость и показывает уровень.",
+  l:[["radiator","Тонкий шланг"]],
+  f:["Уровень падает","Пена или масло в жидкости","Трещина по шву"],c:["Уровень по меткам на холодную"],w:"Масло в бачке или белый дым: мотор может быть повреждён, не ездите.",
+  g(g){g.box(1.75,.8,.62,.14,.16,.2)}},
+ ac:{n:"Кондиционер: компрессор и конденсатор",s:"cool",z:"hood",
+  d:"Компрессор качает хладагент, конденсатор перед радиатором сбрасывает тепло.",
+  l:[["belt","Шкив компрессора"],["hvac","Трубки к испарителю в салоне"]],
+  f:["Не холодит","Стук при включении","Масляные следы на трубках"],c:["Включается ли муфта","Заправку и течи проверяют на станции"],
+  g(g){g.cyl([1.8,.34,.18],[1.8,.34,.34],.07);g.box(2.05,.56,0,.02,.36,1.08)}},
+ gearbox:{n:"Коробка передач",s:"trans",z:"hood under",
+  d:"Меняет передаточное число и через дифференциал раздаёт момент на передние колёса.",
+  l:[["engine","Фланец и болты"],["clutch","Первичный вал"],["shafts","Шлицы приводов"],["shifter","Трос или кулиса"],["starter","Посадка стартера"]],
+  f:["Толчки и пробуксовка","Вой на передаче","Течь масла у сальников"],c:["Уровень и цвет масла, если есть щуп","Ошибки блока АКПП","Разъём на корпусе"],
+  g(g){g.cyl([1.45,.44,-.3],[1.45,.44,-.62],.16);g.box(1.33,.4,-.46,.2,.24,.3)}},
+ clutch:{n:"Сцепление или гидротрансформатор",s:"trans",z:"hood under",
+  d:"Соединяет мотор с коробкой. На механике это диск и корзина, на автомате гидротрансформатор.",
+  l:[["engine","Маховик на коленвале"],["gearbox","Первичный вал"],["pedals","Привод педали на механике"]],
+  f:["Обороты растут, а скорость нет","Запах гари","Вибрация при трогании"],c:["Высота схватывания на механике","Масло и ошибки на автомате"],
+  g(g){g.cyl([1.48,.44,-.24],[1.48,.44,-.3],.15)}},
+ shifter:{n:"Кулиса и трос выбора передач",s:"trans",z:"cabin under",
+  d:"Передаёт движение рычага из салона в коробку.",
+  l:[["gearbox","Наконечники на рычагах"],["dash","Рычаг в консоли"]],
+  f:["Передачи включаются туго","Люфт рычага","Положение на табло не совпадает"],c:["Посмотреть наконечники и втулки"],
+  g(g){g.sweep([[1.26,.55,-.52],[.95,.3,-.2],[.42,.42,0]],.009,6);g.cyl([.42,.42,0],[.42,.68,0],.012);g.sphere([.42,.69,0],.03)}},
+ shafts:{n:"Приводные валы и ШРУСы",s:"trans",z:"under",
+  d:"Передают вращение от коробки к ступицам. Шарниры позволяют колесу поворачиваться и ходить вверх-вниз.",
+  l:[["gearbox","Шлицы внутреннего ШРУСа"],["hubs","Шлицы и гайка ступицы"]],
+  f:["Хруст при повороте с газом: наружный ШРУС","Вибрация при разгоне: внутренний","Порванный пыльник и смазка на арке"],c:["Вывернуть руль и осмотреть пыльники"],
+  g(g){g.cyl([1.285,.37,-.38],[1.285,.31,-.58],.018);g.sphere([1.285,.37,-.38],.05);g.sphere([1.285,.31,-.58],.05);g.cyl([1.285,.37,-.28],[1.285,.31,.58],.018);g.sphere([1.285,.37,-.28],.045);g.sphere([1.285,.31,.58],.05)}},
+ strut:{n:"Передние стойки и пружины",s:"susp",z:"hood under",
+  d:"Стойка McPherson совмещает амортизатор и пружину и задаёт положение колеса.",
+  l:[["hubs","Болты к поворотному кулаку"],["sway","Стойка стабилизатора"]],
+  f:["Глухой стук на ямах","Масло на штоке","Раскачка после неровности","Треск пружины при повороте руля"],c:["Осмотр штока","Раскачать машину за крыло","Опорный подшипник при вращении руля"],w:"Сжатая пружина опасна. Снимать только с исправными стяжками.",
+  g(g){for(const s of [1,-1]){g.cyl([1.285,.38,.6*s],[1.285,.8,.54*s],.024);g.cyl([1.285,.38,.6*s],[1.285,.6,.57*s],.034);g.helix([1.285,.62,.57*s],[1.285,.9,.53*s],.075,.01,5);g.cyl([1.285,.9,.53*s],[1.285,.92,.53*s],.075)}}},
+ arm:{n:"Нижние рычаги и шаровые",s:"susp",z:"under",
+  d:"Держат низ кулака и фиксируют колесо спереди-сзади. Шаровая позволяет ему поворачиваться.",
+  l:[["subframe","Сайлентблоки на болтах"],["hubs","Шаровая опора"]],
+  f:["Стук спереди на мелких неровностях","Плавает на дороге","Неравномерный износ шин"],c:["Люфт монтировкой на подъёмнике","Трещины сайлентблоков"],w:"Разрушенная шаровая может привести к потере управления. Не тянуть с ремонтом.",
+  g(g){for(const s of [1,-1]){g.sweep([[1.1,.27,.3*s],[1.285,.25,.62*s],[1.5,.27,.3*s]],.018,8);g.sphere([1.285,.26,.62*s],.03)}}},
+ subframe:{n:"Передний подрамник",s:"susp",z:"under",
+  d:"Силовая рама снизу подкапотного пространства. На ней сидят рычаги, рейка и нижняя опора мотора.",
+  l:[["arm","Сайлентблоки"],["rack","Болты рейки"],["mounts","Нижняя тяга"]],
+  f:["Клин в рулевом после просадки","Стук на переезде","Коррозия, следы удара"],c:["Метки и болты крепления к кузову","Геометрия после удара"],
+  g(g){g.sweep([[1.0,.27,-.38],[1.65,.27,-.38],[1.65,.27,.38],[1.0,.27,.38]],.022,8,true)}},
+ sway:{n:"Стабилизатор и его стойки",s:"susp",z:"under",
+  d:"Торсион связывает левую и правую стороны и уменьшает крен.",
+  l:[["strut","Косточки"],["subframe","Втулки в скобах"]],
+  f:["Мелкий стук на брусчатке","Сильные крены"],c:["Покачать косточку рукой","Осмотр втулок"],
+  g(g){g.sweep([[1.2,.48,.58],[1.2,.34,.55],[1.04,.32,.42],[1.04,.32,-.42],[1.2,.34,-.55],[1.2,.48,-.58]],.012,8)}},
+ hubs:{n:"Ступицы и подшипники",s:"susp",z:"under",
+  d:"На подшипнике вращается колесо. Спереди ступица сидит в поворотном кулаке, сзади на цапфе.",
+  l:[["shafts","Шлицы"],["wheels","Шпильки или болты колеса"],["arm","Кулак на шаровой"],["fbrake","Диск и суппорт на кулаке"]],
+  f:["Гул нарастает со скоростью и меняется в поворотах","Люфт колеса"],c:["Покачать поднятое колесо","Прокрутить рукой, слушая шум"],w:"Поднятую машину держат на подставках, не на домкрате.",
+  g(g){for(const s of [1,-1]){g.cyl([1.285,.31,.56*s],[1.285,.31,.66*s],.06);g.box(1.285,.33,.58*s,.1,.16,.05);g.cyl([-1.285,.31,.58*s],[-1.285,.31,.66*s],.055)}}},
+ beam:{n:"Задняя балка",s:"susp",z:"under trunk",
+  d:"Полузависимая балка: два продольных рычага связаны поперечиной, которая скручивается.",
+  l:[["rshock","Нижние проушины"],["hubs","Фланец цапфы"],["rbrake","Щит тормоза на фланце"]],
+  f:["Стук сзади на ямах","Завал задних колёс","Рыскание на скорости"],c:["Сайлентблоки балки","Схождение и развал"],
+  g(g){g.cyl([-1.08,.3,-.6],[-1.08,.3,.6],.035);for(const s of [1,-1]){g.sweep([[-.82,.34,.62*s],[-1.08,.3,.62*s],[-1.285,.31,.62*s]],.028,8)}}},
+ rshock:{n:"Задние амортизаторы и пружины",s:"susp",z:"under trunk",
+  d:"Пружина держит вес, амортизатор гасит колебания. На балке они стоят раздельно.",
+  l:[["beam","Болт снизу"],["spare","Верхние крепления выходят к зоне багажника"]],
+  f:["Масляные следы","Пробои с грузом","Раскачка кормы"],c:["Осмотр штока и резины"],
+  g(g){for(const s of [1,-1]){g.cyl([-1.34,.32,.55*s],[-1.4,.72,.52*s],.024);g.helix([-1.12,.3,.5*s],[-1.12,.52,.5*s],.07,.01,4)}}},
+ wheels:{n:"Колёса и шины",s:"susp",z:"under",ghost:1,
+  d:"Единственный контакт с дорогой. Давление и износ влияют на управление и тормоза.",
+  l:[["hubs","Болты или гайки"]],
+  f:["Биение руля на скорости","Неровный износ","Уводит в сторону"],c:["Давление по табличке на стойке двери","Балансировка","Глубина протектора"],
+  g(g){for(const x of [1.285,-1.285])for(const s of [1,-1])g.cyl([x,.31,.66*s],[x,.31,.86*s],.31,32)}},
+ fbrake:{n:"Передние тормоза",s:"brake",z:"under",
+  d:"Суппорт прижимает колодки к диску.",
+  l:[["hubs","Диск на ступице, суппорт на кулаке"],["blines","Гибкий шланг"]],
+  f:["Скрип и скрежет","Биение в руль","Уводит при торможении"],c:["Толщина колодок и диска","Подвижность направляющих"],w:"После ремонта покачайте педаль до тугой, только потом трогайтесь.",
+  g(g){for(const s of [1,-1]){g.cyl([1.285,.31,.6*s],[1.285,.31,.63*s],.15);g.box(1.135,.33,.615*s,.07,.15,.08)}}},
+ rbrake:{n:"Задние тормоза",s:"brake",z:"under",
+  d:"Барабан с колодками или диск с суппортом. Отсюда обычно работает и стояночный тормоз.",
+  l:[["beam","Щит на балке"],["blines","Трубка и шланг"],["pedals","Трос ручника идёт от рычага в салоне"]],
+  f:["Ручник не держит","Перегрев одного колеса","Течь рабочего цилиндра"],c:["Снять барабан и осмотреть","Ход рычага ручника"],
+  g(g){for(const s of [1,-1])g.cyl([-1.285,.31,.59*s],[-1.285,.31,.66*s],.13)}},
+ mc:{n:"Главный цилиндр и вакуумный усилитель",s:"brake",z:"hood",
+  d:"Цилиндр превращает нажатие педали в давление, усилитель облегчает нажатие за счёт вакуума.",
+  l:[["pedals","Шток через щит"],["abs","Две магистрали"]],
+  f:["Педаль проваливается","Педаль очень тугая при заведённом моторе","Падает уровень жидкости"],c:["Уровень жидкости","Проверка усилителя: педаль должна просесть при пуске"],w:"Провал педали: не ехать. Тормозная жидкость портит лак.",
+  g(g){g.cyl([1.02,.82,-.42],[1.1,.82,-.42],.12);g.cyl([1.1,.82,-.42],[1.27,.82,-.42],.04);g.box(1.2,.89,-.42,.08,.07,.1)}},
+ abs:{n:"Блок ABS",s:"brake",z:"hood",
+  d:"По датчикам колёс сбрасывает давление, чтобы колесо не блокировалось.",
+  l:[["mc","Магистрали"],["blines","Выходы на колёса"],["fuses","Питание"]],
+  f:["Горит ABS","Педаль бьёт на сухом асфальте"],c:["Считать ошибку и найти колесо","Датчик и его проводка"],
+  g(g){g.box(1.12,.74,-.68,.13,.11,.13)}},
+ blines:{n:"Тормозные магистрали",s:"brake",z:"under",
+  d:"Трубки и шланги несут жидкость от блока ABS к колёсам.",
+  l:[["abs","Штуцеры"],["fbrake","Шланг"],["rbrake","Трубка и шланг"]],
+  f:["Мокрые следы","Вздутый шланг","Ржавые трубки"],c:["Осмотр от блока до колёс"],w:"Течь тормозной жидкости: машина не едет.",
+  g(g){g.sweep([[1.12,.7,-.68],[1.2,.45,-.62],[1.285,.38,-.6]],.006,5);g.sweep([[1.12,.7,-.66],[1.1,.45,0],[1.25,.42,.58],[1.285,.38,.6]],.006,5);g.sweep([[1.12,.7,-.7],[.9,.2,-.72],[-1.0,.2,-.72],[-1.285,.33,-.6]],.006,5);g.sweep([[-1.0,.2,-.72],[-1.1,.28,0],[-1.285,.33,.6]],.006,5)}},
+ rack:{n:"Рулевая рейка и тяги",s:"steer",z:"under",
+  d:"Шестерня вала двигает зубчатую рейку, а тяги поворачивают кулаки.",
+  l:[["column","Шлицевое соединение или кардан"],["subframe","Хомуты на подрамнике"],["hubs","Наконечник в рычаге кулака"]],
+  f:["Стук в руль на неровностях","Люфт","Плавает на дороге"],c:["Покачать наконечники","Пыльники рейки"],
+  g(g){g.cyl([1.05,.4,-.34],[1.05,.4,.34],.03);for(const s of [1,-1])g.sweep([[1.05,.4,.34*s],[1.13,.36,.6*s]],.012,8)}},
+ column:{n:"Рулевой вал и колонка",s:"steer",z:"cabin hood",
+  d:"Передаёт поворот руля к рейке. На колонке обычно стоит электроусилитель.",
+  l:[["steering","Шлицы и гайка"],["rack","Промежуточный вал"],["fuses","Питание усилителя"]],
+  f:["Руль тугой и вращается рывками","Щелчки на месте","Усилитель пропадает"],c:["Шарниры промежуточного вала","Ошибки усилителя"],
+  g(g){g.sweep([[.46,.92,-.38],[.86,.72,-.38],[1.05,.42,-.3]],.018,8);g.cyl([.62,.84,-.34],[.78,.76,-.34],.05)}},
+ steering:{n:"Руль",s:"steer",z:"cabin",
+  d:"Здесь же подушка безопасности, поэтому снимать его надо по инструкции.",
+  l:[["column","Шлицы и гайка"],["dash","Кнопки и подрулевые переключатели"]],
+  f:["Руль кривой при прямом ходе","Не работает сигнал или кнопки"],c:["Сход-развал","Шлейф под рулём"],w:"Подушка безопасности: отключите АКБ и выждите время из мануала, прежде чем снимать руль.",
+  g(g){g.torus([.44,.93,-.38],[.87,.42,0],.18,.017);g.cyl([.43,.935,-.38],[.47,.92,-.38],.06)}},
+ pedals:{n:"Педальный узел",s:"cabin",z:"cabin",
+  d:"Газ обычно электронный, тормоз через шток идёт на усилитель, сцепление есть только на механике.",
+  l:[["mc","Шток"],["clutch","Привод на механике"],["ecu","Датчик газа"]],
+  f:["Скрип","Не горят стоп-сигналы: концевик педали"],c:["Концевик тормоза","Что-нибудь под педалями: коврик тоже считается"],
+  g(g){for(const[z,l]of[[-.3,.78],[-.4,.86],[-.5,.78]])g.sweep([[.98,.68,z],[l,.38,z]],.01,6),g.box(l-.01,.36,z,.02,.07,.07)}},
+ tank:{n:"Топливный бак и магистраль",s:"fuel",z:"under",
+  d:"Бак лежит под задним сиденьем. Трубка несёт бензин к рампе на моторе.",
+  l:[["fpump","Модуль в баке"],["intake","Рампа и форсунки"]],
+  f:["Запах бензина","Течь снизу","Сложно заправиться: не дышит система"],c:["Осмотр бака и трубок","Горловина и пробка"],w:"Рядом с топливом нет огня и искр. Сначала сбросьте давление по мануалу.",
+  g(g){g.box(-.72,.3,.02,.5,.2,.95);g.sweep([[-.95,.38,.42],[-1.3,.6,.72],[-1.42,.9,.82]],.024,10);g.sweep([[-.68,.42,.25],[-.2,.22,.36],[1,.22,.36],[1.5,.5,.42],[1.74,.76,.25]],.007,5)}},
+ fpump:{n:"Топливный насос",s:"fuel",z:"under cabin",
+  d:"Модуль с насосом и фильтром-сеткой в баке создаёт давление для форсунок.",
+  l:[["tank","Фланец на баке, под сиденьем или ковриком"],["fuses","Реле и предохранитель"]],
+  f:["Стартер крутит, но не заводится","Глохнет под нагрузкой","Не слышно жужжания при включении зажигания"],c:["Слушать насос при включении зажигания","Реле и предохранитель","Давление манометром"],w:"Работы с баком: хорошее проветривание, никакого огня.",
+  g(g){g.cyl([-.68,.38,.25],[-.68,.46,.25],.06)}},
+ exhcat:{n:"Выпускной коллектор и катализатор",s:"fuel",z:"hood under",
+  d:"Собирает газы из цилиндров и дожигает вредные вещества. Лямбда-зонды следят за составом смеси.",
+  l:[["engine","Шпильки и прокладка"],["muffler","Фланец с гофрой"],["ecu","Лямбда-зонды"]],
+  f:["Потеря тяги","Check Engine","Рост расхода масла","Звон внутри"],c:["Ошибки сканером","Противодавление","Эндоскоп в цилиндры"],w:"Катализатор раскаляется. Не парковаться на сухой траве.",
+  g(g){g.sweep([[1.34,.68,-.15],[1.28,.62,.08]],.02,8);g.sweep([[1.34,.68,.2],[1.28,.62,.08]],.02,8);g.cyl([1.28,.62,.08],[1.22,.38,.08],.06)}},
+ muffler:{n:"Труба и глушитель",s:"fuel",z:"under trunk",
+  d:"Отводит газы назад и снижает шум.",
+  l:[["exhcat","Фланец"]],
+  f:["Рёв и громкий выхлоп","Запах в салоне","Дребезг снизу"],c:["Подвесы и хомуты","Сквозная ржавчина"],w:"Запах выхлопа в салоне опасен: откройте окна и не откладывайте ремонт.",
+  g(g){g.sweep([[1.22,.38,.08],[1,.22,.05],[-.3,.22,-.55],[-1.3,.25,-.6],[-1.72,.3,-.5]],.024,8);g.cyl([-1.75,.33,-.55],[-1.75,.33,.35],.1);g.sweep([[-1.75,.33,.3],[-2.14,.28,.42]],.024,8)}},
+ seats:{n:"Сиденья и крепления ремней",s:"cabin",z:"cabin",
+  d:"Каркас на салазках, под сиденьем часто идут разъёмы подушек и датчиков ремня.",
+  l:[["fpump","Под задним сиденьем лежит лючок модуля, если он предусмотрен"]],
+  f:["Люфт на салазках","Горит ошибка SRS после снятия"],c:["Разъёмы под сиденьем"],w:"Подключать разъёмы подушек только с отключённой АКБ.",
+  g(g){for(const s of [1,-1]){g.box(.02,.5,.38*s,.5,.12,.5);g.box(-.24,.8,.38*s,.1,.55,.48);g.box(-.25,1.15,.38*s,.1,.15,.26)}g.box(-.88,.52,0,.5,.12,1.3);g.box(-1.13,.8,0,.1,.55,1.3)}},
+ dash:{n:"Торпедо и панель приборов",s:"cabin",z:"cabin",
+  d:"Здесь приборы, диагностический разъём OBD, блок в салоне и воздуховоды.",
+  l:[["hvac","Воздуховоды"],["steering","Подрулевые переключатели"],["shifter","Рычаг в консоли"],["ecu","OBD: линия связи с блоками"]],
+  f:["Горят лампы на панели","Сверчки и скрипы"],c:["Сканер в разъём OBD","Лампы расшифровать в руководстве"],
+  g(g){g.box(.78,.86,0,.35,.22,1.5);g.box(.42,.5,0,.56,.16,.22)}},
+ hvac:{n:"Печка и блок климата",s:"cabin",z:"cabin",
+  d:"Радиатор печки греет воздух от мотора, испаритель охлаждает от кондиционера, мотор вентилятора гонит его в салон.",
+  l:[["hoses","Шланги через щит"],["ac","Трубки испарителя"],["dash","Воздуховоды"]],
+  f:["Дует холодным на прогретом моторе","Запах сырости","Вентилятор работает только на одной скорости","Влага на коврике"],c:["Салонный фильтр","Уровень антифриза","Резистор вентилятора"],
+  g(g){g.box(.82,.67,.14,.2,.2,.42);g.cyl([.82,.67,.36],[.82,.67,.46],.1)}},
+ lights:{n:"Фары и фонари",s:"elec",z:"hood trunk",
+  d:"Передние фары и задние фонари с поворотниками и стоп-сигналами.",
+  l:[["fuses","Цепи через реле и предохранители"]],
+  f:["Не горит одна лампа","Частый щелчок поворотника","Запотевание"],c:["Сама лампа","Разъём и масса"],
+  g(g){for(const s of [1,-1]){g.box(1.98,.74,.62*s,.18,.13,.3);g.box(-2.02,.86,.54*s,.08,.15,.28)}}},
+ spare:{n:"Запаска и инструмент",s:"trunk",z:"trunk",
+  d:"Запасное колесо и домкрат лежат в нише под полом багажника.",
+  l:[],
+  f:["Влага в нише: течь уплотнителя или шва","Запаска спущена"],c:["Давление запаски","Сухо ли под полом"],w:"Домкрат только для смены колеса. Под машину нельзя лезть без подставок.",
+  g(g){g.cyl([-1.62,.48,0],[-1.62,.64,0],.29,28);g.box(-1.95,.56,.45,.2,.08,.1)}},
+ trunkl:{n:"Замок и крышка багажника",s:"trunk",z:"trunk",
+  d:"Замок снизу крышки, рядом привод кнопки и проводка в гофре.",
+  l:[["fuses","Цепь кнопки и привода"],["lights","Гофра проводов в крышку"]],
+  f:["Не открывается кнопкой","Перетёрты провода в гофре","Течь в багажник"],c:["Осмотреть провода в гофре","Уплотнитель"],
+  g(g){g.box(-2.1,.92,0,.06,.08,.14);g.sweep([[-1.8,1.05,.25],[-2.05,1.02,.12],[-2.1,.95,.05]],.012,6)}}
+};
+const SYMPTOMS=[
+ {id:"nos",t:"Не заводится, стартер не крутит",sev:"care",L:"Поиск на месте",p:["battery","fuses","starter"],s:["Посмотрите, горит ли панель при включении зажигания.","Проверьте клеммы и напряжение на АКБ.","Попробуйте прикурить от исправной машины по инструкции.","Если АКБ в норме, проверьте реле и предохранители стартера и его цепь."]},
+ {id:"cra",t:"Стартер крутит, но мотор не схватывает",sev:"care",L:"Поиск на месте",p:["fpump","coils","fuses","timing"],s:["Включите зажигание и послушайте, жужжит ли бензонасос.","Проверьте топливо в баке, это не шутка: датчик тоже ломается.","Считайте ошибки сканером.","Если после пуска пахнет бензином и слышен необычно лёгкий ход стартера, не крутите дальше и проверьте привод ГРМ."]},
+ {id:"hot",t:"Перегрев: стрелка в красной зоне",sev:"stop",L:"Не ехать",p:["exptank","hoses","fan","thermostat","pump","radiator"],s:["Остановитесь и заглушите мотор.","Дайте остыть, крышку не открывайте.","На холодной машине проверьте уровень и следы течи.","Заведите и посмотрите, включается ли вентилятор."]},
+ {id:"oil",t:"Горит красная лампа давления масла",sev:"stop",L:"Не ехать",p:["oil","engine"],s:["Сразу заглушите мотор.","Через несколько минут проверьте щуп на ровном месте.","Если масла мало, долейте подходящее по мануалу и проверьте лампу.","Если лампа не гаснет, везите на эвакуаторе."]},
+ {id:"brk",t:"Педаль тормоза проваливается",sev:"stop",L:"Не ехать",p:["blines","mc","fbrake","rbrake"],s:["Не продолжайте движение.","Проверьте уровень жидкости в бачке.","Осмотрите колёса изнутри и магистрали на мокрые следы."]},
+ {id:"chk",t:"Check Engine и пропала тяга",sev:"care",L:"Ехать осторожно до сервиса",p:["coils","exhcat","intake","fpump"],s:["Считайте коды ошибок сканером через разъём в салоне.","Если лампа мигает, снизьте нагрузку.","Разделите задачу: пропуски зажигания, смесь или катализатор."]},
+ {id:"kn",t:"Стук спереди на неровностях",sev:"care",L:"Ехать осторожно до сервиса",p:["sway","arm","strut","rack","subframe"],s:["Начните с косточек стабилизатора: это самый частый и дешёвый вариант.","На подъёмнике проверьте люфты шаровых и наконечников.","Посмотрите сайлентблоки и опоры стоек."]},
+ {id:"cv",t:"Хруст при повороте под газом",sev:"care",L:"Ехать осторожно до сервиса",p:["shafts","hubs"],s:["Выверните руль и осмотрите пыльник наружного ШРУСа.","Проверьте, какая сторона хрустит, поворачивая в обе стороны на пустой площадке."]},
+ {id:"hum",t:"Гул растёт со скоростью",sev:"care",L:"Ехать осторожно до сервиса",p:["hubs","wheels"],s:["Сначала посмотрите на шины: неровный износ шумит похоже.","На скорости мягко переложите руль влево и вправо: при нагрузке на больной подшипник гул растёт.","Покачайте поднятое колесо на подставках."]},
+ {id:"vib",t:"Биение в руль при торможении",sev:"care",L:"Ехать осторожно до сервиса",p:["fbrake","hubs","wheels"],s:["Замерьте биение и толщину диска.","Проверьте затяжку и чистоту посадки колеса.","Посмотрите направляющие суппорта."]},
+ {id:"chg",t:"Горит лампа аккумулятора",sev:"care",L:"Ехать осторожно до сервиса",p:["belt","alternator","battery"],s:["Откройте капот на заглушенном моторе и посмотрите ремень.","Если ремня нет, не ездите: может встать и помпа.","Измерьте напряжение бортсети на работающем моторе."]},
+ {id:"ac",t:"Печка дует холодным",sev:"ok",L:"Можно доехать",p:["exptank","thermostat","hvac","hoses"],s:["Проверьте уровень охлаждающей жидкости.","Посмотрите, до какой температуры прогревается мотор.","На прогретом моторе сравните оба шланга печки."]},
+ {id:"cat",g:1,t:"Масло уходит и падает тяга",sev:"care",L:"Ехать осторожно до сервиса",p:["exhcat","engine"],s:["Проверьте историю замены катализатора.","Сделайте компрессию и посмотрите цилиндры эндоскопом.","Осмотрите катализатор: разрушение и пыль в цилиндрах описаны в обоих обзорах."]},
+ {id:"chain",g:1,t:"Лязг или шелест в районе ГРМ",sev:"care",L:"Ехать осторожно до сервиса",p:["timing","oil"],s:["Узнайте пробег замены цепи.","Проверьте уровень масла.","Считайте ошибки по положению распредвала и коленвала.","Проверьте зазоры клапанов, если стук сверху."]},
+ {id:"tug",g:1,t:"Руль вращается туго и рывками",sev:"care",L:"Ехать осторожно до сервиса",p:["column","subframe","rack"],s:["Проверьте, до рестайлинга ли машина.","Посмотрите положение подрамника и промежуточный вал.","Опишите мастеру: туго именно рывками, это важно."]},
+ {id:"sh",g:1,t:"Автомат работает с толчками",sev:"care",L:"Ехать осторожно до сервиса",p:["fuses","gearbox","clutch"],s:["Осмотрите шлейф и разъём к АКПП на окисление.","Считайте ошибки блока коробки.","Проверьте, когда меняли масло. Перегрев и грязное масло вредят автомату."]}
+];
+const SAFETY="Под поднятую машину лезут только с подставками. Систему охлаждения открывают на холодном моторе. Моменты затяжки, объёмы и допуски здесь не указаны: берите их из заводского руководства под ваш VIN.";
+
+/* ─────────── Связи и выборки ─────────── */
+const LINKS={};
+for(const id in PARTS){LINKS[id]=LINKS[id]||[];PARTS[id].l.forEach(([to,via])=>{LINKS[id].push([to,via]);(LINKS[to]=LINKS[to]||[]).push([id,via])})}
+for(const id in LINKS){const seen=new Set();LINKS[id]=LINKS[id].filter(([to])=>seen.has(to)?false:(seen.add(to),true))}
+const CARPH={"accent-x3":"ax3","accent-lc":"alc","accent-mc":"amc","accent-rb":"arb","accent-hc":"ahc","accent-bn7":"abn","solaris-rb":"srb","solaris-hc":"shc","rio-dc":"rdc","rio-jb":"rjb","rio-ub":"rqb","rio-yb":"ryb"};
+const makeOf=(n,m)=>n.makes.find(x=>x.id===m);
+const modelOf=(mk,m)=>mk.models.find(x=>x.id===m);
+const findNat=id=>NATIONS.find(n=>n.id===id)||NATIONS[0];
+
+/* ─────────── Геометрия ─────────── */
+const V={sub:(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],add:(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]],mul:(a,k)=>[a[0]*k,a[1]*k,a[2]*k],
+ dot:(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],cross:(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],
+ norm:a=>{const l=Math.hypot(a[0],a[1],a[2])||1;return[a[0]/l,a[1]/l,a[2]/l]}};
+class Geo{
+ constructor(){this.a=[];this.min=[9,9,9];this.max=[-9,-9,-9]}
+ v(p,n){this.a.push(p[0],p[1],p[2],n[0],n[1],n[2]);for(let i=0;i<3;i++){if(p[i]<this.min[i])this.min[i]=p[i];if(p[i]>this.max[i])this.max[i]=p[i]}}
+ quad(a,b,c,d,na,nb,nc,nd){this.v(a,na);this.v(b,nb);this.v(c,nc);this.v(a,na);this.v(c,nc);this.v(d,nd)}
+ box(x,y,z,sx,sy,sz){const h=[sx/2,sy/2,sz/2];const f=(n,u,w)=>{const c=[x+n[0]*h[0],y+n[1]*h[1],z+n[2]*h[2]];const U=[u[0]*h[0],u[1]*h[1],u[2]*h[2]],W=[w[0]*h[0],w[1]*h[1],w[2]*h[2]];
+   const p=(a,b)=>[c[0]+U[0]*a+W[0]*b,c[1]+U[1]*a+W[1]*b,c[2]+U[2]*a+W[2]*b];this.quad(p(-1,-1),p(1,-1),p(1,1),p(-1,1),n,n,n,n)};
+  f([1,0,0],[0,1,0],[0,0,1]);f([-1,0,0],[0,0,1],[0,1,0]);f([0,1,0],[0,0,1],[1,0,0]);f([0,-1,0],[1,0,0],[0,0,1]);f([0,0,1],[1,0,0],[0,1,0]);f([0,0,-1],[0,1,0],[1,0,0])}
+ sweep(pts,r,seg=10,closed=false){
+  const P=[];for(let i=0;i<pts.length;i++){P.push(pts[i])}
+  const smooth=[];const n=pts.length;const cnt=closed?n:n-1;
+  if(n>2){const sub=6;for(let i=0;i<cnt;i++){const p0=pts[closed?(i-1+n)%n:Math.max(i-1,0)],p1=pts[i],p2=pts[(i+1)%n],p3=pts[closed?(i+2)%n:Math.min(i+2,n-1)];
+    for(let k=0;k<sub;k++){const t=k/sub,t2=t*t,t3=t2*t;smooth.push([0,1,2].map(j=>.5*(2*p1[j]+(p2[j]-p0[j])*t+(2*p0[j]-5*p1[j]+4*p2[j]-p3[j])*t2+(3*p1[j]-p0[j]-3*p2[j]+p3[j])*t3)))}}
+   if(!closed)smooth.push(pts[n-1])}else smooth.push(...pts);
+  this._tube(smooth,r,seg,closed)}
+ _tube(p,r,seg,closed){
+  const n=p.length,tan=i=>V.norm(V.sub(p[closed?(i+1)%n:Math.min(i+1,n-1)],p[closed?(i-1+n)%n:Math.max(i-1,0)]));
+  let t=tan(0),u=V.norm(Math.abs(t[1])<.9?V.cross(t,[0,1,0]):V.cross(t,[1,0,0]));const rings=[];
+  for(let i=0;i<n;i++){t=tan(i);u=V.norm(V.sub(u,V.mul(t,V.dot(u,t))));const w=V.cross(t,u);const ri=[];
+   for(let k=0;k<seg;k++){const a=k/seg*Math.PI*2,nr=V.add(V.mul(u,Math.cos(a)),V.mul(w,Math.sin(a)));ri.push([V.add(p[i],V.mul(nr,r)),nr])}rings.push(ri)}
+  const last=closed?n:n-1;
+  for(let i=0;i<last;i++){const A=rings[i],B=rings[(i+1)%n];for(let k=0;k<seg;k++){const k2=(k+1)%seg;this.quad(A[k][0],A[k2][0],B[k2][0],B[k][0],A[k][1],A[k2][1],B[k2][1],B[k][1])}}
+  if(!closed){const cap=(ring,c,nr,flip)=>{for(let k=0;k<seg;k++){const k2=(k+1)%seg;if(flip){this.v(c,nr);this.v(ring[k2][0],nr);this.v(ring[k][0],nr)}else{this.v(c,nr);this.v(ring[k][0],nr);this.v(ring[k2][0],nr)}}};
+   cap(rings[0],p[0],V.mul(tan(0),-1),false);cap(rings[n-1],p[n-1],tan(n-1),true)}}
+ cyl(a,b,r,seg=20){this._tube([a,b],r,seg,false)}
+ sphere(c,r,seg=14){for(let i=0;i<seg/2;i++){const a=i/(seg/2)*Math.PI,b=(i+1)/(seg/2)*Math.PI;for(let k=0;k<seg;k++){const u=k/seg*Math.PI*2,w=(k+1)/seg*Math.PI*2;
+   const N=(t,f)=>[Math.sin(t)*Math.cos(f),Math.cos(t),Math.sin(t)*Math.sin(f)],P=n=>V.add(c,V.mul(n,r));const n1=N(a,u),n2=N(a,w),n3=N(b,w),n4=N(b,u);this.quad(P(n1),P(n2),P(n3),P(n4),n1,n2,n3,n4)}}}
+ torus(c,ax,R,r){ax=V.norm(ax);const u=V.norm(V.cross(ax,[0,0,1])),w=V.cross(ax,u),p=[];for(let i=0;i<40;i++){const a=i/40*Math.PI*2;p.push(V.add(c,V.add(V.mul(u,Math.cos(a)*R),V.mul(w,Math.sin(a)*R))))}this._tube(p,r,8,true)}
+ helix(a,b,R,r,turns){const ax=V.sub(b,a),t=V.norm(ax),u=V.norm(V.cross(t,[0,0,1])),w=V.cross(t,u),p=[],N=Math.ceil(turns*24);for(let i=0;i<=N;i++){const f=i/N,an=f*turns*Math.PI*2;p.push(V.add(V.add(a,V.mul(ax,f)),V.add(V.mul(u,Math.cos(an)*R),V.mul(w,Math.sin(an)*R))))}this._tube(p,r,6,false)}
+}
+function bodyShell(){
+ const S=[[2.19,.66,.32,.48],[2.12,.78,.24,.66],[1.9,.86,.2,.79],[1.5,.95,.18,.84],[1,1.02,.18,.85],[.62,1.27,.18,.86],[.3,1.43,.18,.86],[-.1,1.47,.18,.86],[-.6,1.45,.18,.86],[-1,1.28,.18,.85],[-1.4,1.1,.2,.84],[-1.8,1.06,.24,.8],[-2.08,1,.32,.7],[-2.19,.88,.42,.54]];
+ const SUB=4,R=36,st=[];
+ for(let i=0;i<S.length-1;i++){const p0=S[Math.max(i-1,0)],p1=S[i],p2=S[i+1],p3=S[Math.min(i+2,S.length-1)];for(let k=0;k<SUB;k++){const t=k/SUB,t2=t*t,t3=t2*t;st.push(p1.map((_,j)=>.5*(2*p1[j]+(p2[j]-p0[j])*t+(2*p0[j]-5*p1[j]+4*p2[j]-p3[j])*t2+(3*p1[j]-p0[j]-3*p2[j]+p3[j])*t3)))}}
+ st.push(S[S.length-1]);
+ const ring=s=>{const[x,top,bot,hw]=s,mid=Math.min(.62,(top+bot)/2),o=[];for(let k=0;k<R;k++){const a=k/R*Math.PI*2,c=Math.cos(a),sn=Math.sin(a),rl=Math.sign(sn)*Math.pow(Math.abs(sn),.62);let y=sn>=0?mid+(top-mid)*rl:mid+(mid-bot)*rl,z=hw*Math.sign(c)*Math.pow(Math.abs(c),.42);if(top>1.03&&y>.94){const q=(y-.94)/(top-.94);z*=1-.27*q}o.push([x,y,z])}return o};
+ const rs=st.map(ring),g=new Geo(),line=[];
+ const nor=(i,k)=>{const a=rs[Math.max(i-1,0)][k],b=rs[Math.min(i+1,rs.length-1)][k],c=rs[i][(k-1+R)%R],d=rs[i][(k+1)%R];let n=V.norm(V.cross(V.sub(b,a),V.sub(d,c)));const cen=[rs[i][k][0],.62,0];if(V.dot(n,V.sub(rs[i][k],cen))<0)n=V.mul(n,-1);return n};
+ for(let i=0;i<rs.length-1;i++)for(let k=0;k<R;k++){const k2=(k+1)%R;g.quad(rs[i][k],rs[i][k2],rs[i+1][k2],rs[i+1][k],nor(i,k),nor(i,k2),nor(i+1,k2),nor(i+1,k))}
+ for(let i=0;i<rs.length;i+=SUB)for(let k=0;k<R;k++)line.push(rs[i][k],rs[i][(k+1)%R]);
+ for(let k=0;k<R;k+=3)for(let i=0;i<rs.length-1;i++)line.push(rs[i][k],rs[i+1][k]);
+ return{g,line}}
+
+/* ─────────── Рендер на WebGL ─────────── */
+const hex=h=>[parseInt(h.slice(1,3),16)/255,parseInt(h.slice(3,5),16)/255,parseInt(h.slice(5,7),16)/255];
+const BG=hex("#0f2433"),HOT=hex("#ff8f33"),LINK=hex("#f5fbff");
+function perspective(f,a,n,r){const t=1/Math.tan(f/2);return[t/a,0,0,0,0,t,0,0,0,0,(r+n)/(n-r),-1,0,0,2*r*n/(n-r),0]}
+function lookAt(e,c,u){const z=V.norm(V.sub(e,c)),x=V.norm(V.cross(u,z)),y=V.cross(z,x);return[x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,-V.dot(x,e),-V.dot(y,e),-V.dot(z,e),1]}
+function mul(a,b){const o=new Array(16).fill(0);for(let c=0;c<4;c++)for(let r=0;r<4;r++)for(let k=0;k<4;k++)o[c*4+r]+=a[k*4+r]*b[c*4+k];return o}
+const VS=`attribute vec3 p;attribute vec3 n;uniform mat4 m;varying vec3 W;varying vec3 N;void main(){W=p;N=n;gl_Position=m*vec4(p,1.);}`;
+const FS=`precision mediump float;varying vec3 W;varying vec3 N;uniform vec3 c;uniform vec3 e;uniform float a;uniform float mode;
+void main(){if(mode>1.5){gl_FragColor=vec4(c,a);return;}
+vec3 n=normalize(N);vec3 v=normalize(e-W);float nv=abs(dot(n,v));float rim=pow(1.-nv,2.6);
+if(mode>.5){gl_FragColor=vec4(vec3(.62,.84,.97),a*(.05+rim*.85));return;}
+if(!gl_FrontFacing)n=-n;vec3 L=normalize(vec3(.45,.8,.35));float d=max(dot(n,L),0.);float h=n.y*.5+.5;
+vec3 col=c*(.38+.2*h+.62*d)+vec3(.55,.75,.9)*rim*.22;gl_FragColor=vec4(col,a);}`;
+class Scene{
+ constructor(canvas,onPick,onHover){
+  this.cv=canvas;this.onPick=onPick;this.onHover=onHover;
+  const gl=canvas.getContext("webgl",{antialias:true,alpha:false,powerPreference:"default"});this.gl=gl;if(!gl)return;
+  const sh=(t,s)=>{const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);return o};
+  const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,VS));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,FS));gl.linkProgram(pr);gl.useProgram(pr);this.pr=pr;
+  this.u={};for(const k of["m","c","e","a","mode"])this.u[k]=gl.getUniformLocation(pr,k);
+  this.ap=gl.getAttribLocation(pr,"p");this.an=gl.getAttribLocation(pr,"n");gl.enableVertexAttribArray(this.ap);gl.enableVertexAttribArray(this.an);
+  gl.enable(gl.DEPTH_TEST);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
+  /* сборка */
+  const all=[];this.parts={};let off=0;
+  const push=(g)=>{for(let i=0;i<g.a.length;i++)all.push(g.a[i]);const r=[off,g.a.length/6];off+=g.a.length/6;return r};
+  let idc=1;this.byId={};
+  for(const id in PARTS){const g=new Geo();PARTS[id].g(g);const[first,count]=push(g);const pid=idc++;this.parts[id]={first,count,pid,color:hex(SYS[PARTS[id].s][1]),ctr:[(g.min[0]+g.max[0])/2,(g.min[1]+g.max[1])/2,(g.min[2]+g.max[2])/2],ghost:!!PARTS[id].ghost};this.byId[pid]=id}
+  const b=bodyShell();const r=push(b.g);this.shell={first:r[0],count:r[1]};
+  const lv=[];const pl=q=>lv.push(q[0],q[1],q[2],0,1,0);b.line.forEach(pl);this.cage=lv.length/6;
+  for(let i=-8;i<=8;i++){const k=i*.5;pl([k,0,-3]);pl([k,0,3])}for(let i=-6;i<=6;i++){const k=i*.5;pl([-4,0,k]);pl([4,0,k])}this.lines=lv.length/6;
+  this.vbo=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,this.vbo);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(all),gl.STATIC_DRAW);
+  this.lbo=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,this.lbo);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(lv),gl.STATIC_DRAW);
+  this.dyn=gl.createBuffer();
+  /* камера */
+  this.cam={t:[0,.55,0],d:6.6,y:.75,p:.33};this.goal={...this.cam,t:[...this.cam.t]};
+  this.visible=new Set(Object.keys(PARTS));this.sel=null;this.hi=new Map();this.spin=!matchMedia("(prefers-reduced-motion: reduce)").matches;this.reduced=!this.spin;this.dirty=true;this.alive=true;
+  this.fb=gl.createFramebuffer();this.tex=gl.createTexture();this.rb=gl.createRenderbuffer();
+  this.bindInput();
+  this.ro=new ResizeObserver(()=>{this.resize();this.dirty=true});this.ro.observe(canvas);this.resize();
+  const loop=()=>{if(!this.alive)return;this.tick();requestAnimationFrame(loop)};requestAnimationFrame(loop);
+ }
+ resize(){const gl=this.gl,d=Math.min(devicePixelRatio||1,2),w=Math.max(1,Math.round(this.cv.clientWidth*d)),h=Math.max(1,Math.round(this.cv.clientHeight*d));if(this.cv.width===w&&this.cv.height===h&&this.fbw===w)return;this.cv.width=w;this.cv.height=h;this.fbw=w;this.dpr=d;
+  gl.bindTexture(gl.TEXTURE_2D,this.tex);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,w,h,0,gl.RGBA,gl.UNSIGNED_BYTE,null);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+  gl.bindRenderbuffer(gl.RENDERBUFFER,this.rb);gl.renderbufferStorage(gl.RENDERBUFFER,gl.DEPTH_COMPONENT16,w,h);
+  gl.bindFramebuffer(gl.FRAMEBUFFER,this.fb);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,this.tex,0);gl.framebufferRenderbuffer(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.RENDERBUFFER,this.rb);gl.bindFramebuffer(gl.FRAMEBUFFER,null)}
+ setCam(z){const c=CAM[z];this.goal={t:[...c.t],d:c.d,y:c.y,p:c.p};if(this.reduced)this.cam={...this.goal,t:[...c.t]};this.dirty=true}
+ eye(){const c=this.cam,cp=Math.cos(c.p);return[c.t[0]+c.d*cp*Math.cos(c.y),c.t[1]+c.d*Math.sin(c.p),c.t[2]+c.d*cp*Math.sin(c.y)]}
+ matrix(){const gl=this.gl,a=gl.drawingBufferWidth/gl.drawingBufferHeight;const fov=a<1?1.05:.72;return mul(perspective(fov,a,.1,40),lookAt(this.eye(),this.cam.t,[0,1,0]))}
+ tick(){const c=this.cam,g=this.goal,k=.14;let moving=false;
+  if(this.spin&&!this.locked){g.y+=.0035;this.dirty=true}
+  for(const key of["d","y","p"]){const dv=g[key]-c[key];if(Math.abs(dv)>.0005){c[key]+=dv*k;moving=true}}
+  for(let i=0;i<3;i++){const dv=g.t[i]-c.t[i];if(Math.abs(dv)>.0005){c.t[i]+=dv*k;moving=true}}
+  if(moving||this.dirty){this.dirty=false;this.draw()}}
+ bindAttrs(buf){const gl=this.gl;gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.vertexAttribPointer(this.ap,3,gl.FLOAT,false,24,0);gl.vertexAttribPointer(this.an,3,gl.FLOAT,false,24,12)}
+ draw(){const gl=this.gl,u=this.u;gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,gl.drawingBufferWidth,gl.drawingBufferHeight);gl.clearColor(BG[0],BG[1],BG[2],1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+  const m=this.matrix(),e=this.eye();gl.uniformMatrix4fv(u.m,false,m);gl.uniform3fv(u.e,e);
+  const focus=this.sel||this.hi.size>0;
+  /* сетка */
+  this.bindAttrs(this.lbo);gl.enable(gl.BLEND);gl.depthMask(false);gl.uniform1f(u.mode,2);gl.uniform3f(u.c,.35,.55,.68);gl.uniform1f(u.a,.2);gl.drawArrays(gl.LINES,this.cage,this.lines-this.cage);gl.depthMask(true);gl.disable(gl.BLEND);
+  /* детали */
+  this.bindAttrs(this.vbo);gl.uniform1f(u.mode,0);gl.uniform1f(u.a,1);
+  const col=(id,p)=>{let c=p.color;const h=this.hi.get(id);if(id===this.sel||h===2)c=HOT;else if(h===1)c=LINK;else if(focus)c=[c[0]*.28+BG[0]*.72,c[1]*.28+BG[1]*.72,c[2]*.28+BG[2]*.72];return c};
+  const ghosts=[];
+  for(const id of this.visible){const p=this.parts[id];if(p.ghost&&id!==this.sel&&this.hi.get(id)===undefined){ghosts.push(id);continue}gl.uniform3fv(u.c,col(id,p));gl.drawArrays(gl.TRIANGLES,p.first,p.count)}
+  gl.enable(gl.BLEND);
+  for(const id of ghosts){const p=this.parts[id];gl.uniform3f(u.c,.33,.42,.5);gl.uniform1f(u.a,focus?.1:.28);gl.depthMask(false);gl.drawArrays(gl.TRIANGLES,p.first,p.count)}
+  gl.depthMask(false);gl.uniform1f(u.mode,1);gl.uniform1f(u.a,this.shellA===undefined?1:this.shellA);gl.enable(gl.CULL_FACE);
+  gl.cullFace(gl.FRONT);gl.drawArrays(gl.TRIANGLES,this.shell.first,this.shell.count);gl.cullFace(gl.BACK);gl.drawArrays(gl.TRIANGLES,this.shell.first,this.shell.count);gl.disable(gl.CULL_FACE);
+  this.bindAttrs(this.lbo);gl.uniform1f(u.mode,2);gl.uniform3f(u.c,.62,.84,.97);gl.uniform1f(u.a,(this.shellA===undefined?1:this.shellA)*.13);gl.drawArrays(gl.LINES,0,this.cage);
+  /* линии связей */
+  if(this.sel){const a=[],c0=this.parts[this.sel].ctr;for(const[t]of LINKS[this.sel]||[]){if(!this.visible.has(t))continue;const c1=this.parts[t].ctr;a.push(...c0,0,1,0,...c1,0,1,0)}
+   if(a.length){gl.bindBuffer(gl.ARRAY_BUFFER,this.dyn);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(a),gl.DYNAMIC_DRAW);this.bindAttrs(this.dyn);gl.disable(gl.DEPTH_TEST);gl.uniform3fv(u.c,HOT);gl.uniform1f(u.a,.85);gl.drawArrays(gl.LINES,0,a.length/6);gl.enable(gl.DEPTH_TEST)}}
+  gl.depthMask(true);gl.disable(gl.BLEND)}
+ pick(cx,cy){const gl=this.gl,u=this.u,x=Math.floor(cx*this.dpr),y=gl.drawingBufferHeight-Math.floor(cy*this.dpr)-1;
+  gl.bindFramebuffer(gl.FRAMEBUFFER,this.fb);gl.viewport(0,0,gl.drawingBufferWidth,gl.drawingBufferHeight);this.bindAttrs(this.vbo);gl.uniformMatrix4fv(u.m,false,this.matrix());gl.uniform1f(u.mode,2);gl.uniform1f(u.a,1);gl.disable(gl.BLEND);
+  const pass=(wheels)=>{gl.clearColor(0,0,0,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);for(const id of this.visible){const p=this.parts[id];if(p.ghost!==wheels)continue;gl.uniform3f(u.c,p.pid/255,0,0);gl.drawArrays(gl.TRIANGLES,p.first,p.count)}const o=new Uint8Array(4);gl.readPixels(x,y,1,1,gl.RGBA,gl.UNSIGNED_BYTE,o);return o[0]};
+  let v=pass(false);if(!v)v=pass(true);gl.bindFramebuffer(gl.FRAMEBUFFER,null);return this.byId[v]||null}
+ bindInput(){const c=this.cv,ptr=new Map();let down=null,moved=0,pinch=0,hoverT=0;
+  c.addEventListener("pointerdown",e=>{c.setPointerCapture(e.pointerId);ptr.set(e.pointerId,[e.clientX,e.clientY]);down=[e.clientX,e.clientY];moved=0;this.locked=true;this.spin=false;c.classList.add("drag");pinch=0});
+  c.addEventListener("pointermove",e=>{const r=c.getBoundingClientRect();
+   if(ptr.has(e.pointerId)){const o=ptr.get(e.pointerId),dx=e.clientX-o[0],dy=e.clientY-o[1];ptr.set(e.pointerId,[e.clientX,e.clientY]);moved+=Math.abs(dx)+Math.abs(dy);
+    if(ptr.size===2){const[a,b]=[...ptr.values()],ds=Math.hypot(a[0]-b[0],a[1]-b[1]);if(pinch)this.zoom(pinch/ds);pinch=ds}
+    else{const g=this.goal;g.y+=dx*.008;g.p=Math.max(-1.2,Math.min(1.45,g.p+dy*.008));if(this.reduced){this.cam.y=g.y;this.cam.p=g.p}this.dirty=true}
+    this.onHover(null);return}
+   if(e.pointerType==="mouse"){const t=performance.now();if(t-hoverT>70){hoverT=t;const id=this.pick(e.clientX-r.left,e.clientY-r.top);this.onHover(id,e.clientX-r.left,e.clientY-r.top)}}});
+  const up=e=>{const r=c.getBoundingClientRect();const had=ptr.delete(e.pointerId);c.classList.remove("drag");if(had&&moved<7&&ptr.size===0&&e.type==="pointerup")this.onPick(this.pick(e.clientX-r.left,e.clientY-r.top))};
+  c.addEventListener("pointerup",up);c.addEventListener("pointercancel",up);
+  c.addEventListener("pointerleave",()=>this.onHover(null));
+  c.addEventListener("wheel",e=>{e.preventDefault();this.spin=false;this.zoom(Math.exp(e.deltaY*.001))},{passive:false})}
+ zoom(k){this.goal.d=Math.max(1.4,Math.min(12,this.goal.d*k));if(this.reduced)this.cam.d=this.goal.d;this.dirty=true}
+ destroy(){this.alive=false;this.ro&&this.ro.disconnect();const l=this.gl&&this.gl.getExtension("WEBGL_lose_context");l&&l.loseContext()}
+}
+
+/* ─────────── Интерфейс ─────────── */
+const $=(s,r=document)=>r.querySelector(s);
+const app=$("#app"),crumbs=$("#crumbs");
+const state={nat:"korea",make:"hyundai",model:"accent",gen:null,tab:"build",part:null,sym:null,zone:"all",off:new Set(),q:""};
+let scene=null;
+addEventListener("error",e=>{const t=e.target;if(t.tagName!=="IMG"||t.dataset.tried)return;t.dataset.tried="1";const base=t.src;setTimeout(()=>{t.src=base.includes("/960px-")?base.replace("/960px-","/500px-"):base+"?r=1"},1400)},true);
+
+function go(h){if(location.hash==="#"+h)route();else location.hash=h}
+function renderCredits(){setCrumbs([["Каталог","tree-korea-hyundai-accent"],["Авторы фото",null]]);
+ const rows=Object.keys(PH).filter((k,i,a)=>a.findIndex(x=>PH[x][1]===PH[k][1])===i);
+ app.innerHTML=`<section class="credits"><h1>Авторы и лицензии фото</h1><p class="note">Все снимки взяты с Wikimedia Commons. Они не «без авторских прав»: часть в общественном достоянии, остальные по лицензиям Creative Commons с обязательным указанием автора. Детали сняты на разных машинах и показаны как пример.</p><ul>${rows.map(k=>`<li><a href="${pageURL(k)}" target="_blank" rel="noopener">${decodeURIComponent(PH[k][1]).replace(/_/g," ")}</a>, ${PH[k][2]}, ${PH[k][3]}</li>`).join("")}</ul></section>`}
+function route(){
+ const h=location.hash.slice(1).split("-");
+ if(h[0]==="photos"){if(scene){scene.destroy();scene=null}renderCredits();return}
+ if(h[0]==="car"&&h.length>=5){const n=findNat(h[1]),mk=makeOf(n,h[2]),md=mk&&mk.models&&modelOf(mk,h[3]),g=md&&md.gens.find(x=>slug(x)===h[4]);if(g){state.nat=n.id;state.make=mk.id;state.model=md.id;state.gen=g;openCar();return}}
+ if(h[0]==="tree"){if(h[1])state.nat=findNat(h[1]).id;state.make=h[2]||null;state.model=h[3]||null}
+ state.gen=null;if(scene){scene.destroy();scene=null}renderTree()}
+const slug=g=>g.code.split(" ")[0].toLowerCase();
+
+function setCrumbs(list){crumbs.innerHTML=list.map((x,i)=>x[1]?`<button data-go="${x[1]}">${x[0]}</button>`:`<span>${x[0]}</span>`).join("<span>›</span>");
+ crumbs.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go))}
+
+function renderTree(){
+ const n=findNat(state.nat),mk=state.make&&makeOf(n,state.make),md=mk&&mk.models&&state.model&&modelOf(mk,state.model);
+ const c=[[n.n,`tree-${n.id}`]];if(mk)c.push([mk.n,`tree-${n.id}-${mk.id}`]);if(md)c.push([md.n,null]);setCrumbs(c);
+ const filled=n.makes.some(m=>m.models);
+ app.innerHTML=`<div class="tree">
+  <nav class="nations" aria-label="Страны"><div class="lab">Страна</div>
+   ${NATIONS.map(x=>`<button class="nation" data-n="${x.id}" aria-current="${x.id===n.id}"><i>${x.c}</i>${x.n}<small>${x.makes.length}</small></button>`).join("")}</nav>
+  <section class="branch">
+   <div class="tier"><h2>Марки: ${n.n}</h2>
+    <div class="row">${n.makes.map(m=>m.models?`<button class="tile" data-m="${m.id}" aria-current="${!!mk&&m.id===mk.id}"><strong>${m.n}</strong><span>Заполнено моделей: ${m.models.filter(q=>q.gens).length}</span></button>`:`<button class="tile" disabled><strong>${m.n}</strong><span>В очереди</span></button>`).join("")}</div>
+    ${filled?"":`<p class="note">Эта страна пока только в списке. В прототипе заполнена ветка Кореи: выберите её слева.</p>`}</div>
+   ${mk?`<div class="tier"><h2>Модели: ${mk.n}</h2><div class="row">${mk.models.map(q=>q.gens?`<button class="tile" data-md="${q.id}" aria-current="${!!md&&q.id===md.id}"><strong>${q.n}</strong><span>${q.gens.length} покол. · ${q.alt}</span></button>`:`<button class="tile" disabled><strong>${q.n}</strong><span>В очереди</span></button>`).join("")}</div></div>`:""}
+   ${md?`<div class="tier"><h2>${mk.n} ${md.n}: поколения по годам</h2><div class="chain-wrap"><ol class="chain">${md.gens.map(g=>`<li><button class="gen" data-g="${slug(g)}"><span class="h"><span class="tn">${g.tier}</span><span class="code">${g.code}</span></span><img src="${imgURL(CARPH[md.id+"-"+slug(g)],330)}" alt="${mk.n} ${md.n} ${g.code}" loading="lazy" data-fb="1"><span class="y">${g.y}</span><span class="st ${g.notes?"full":""}">${g.notes?"Схема и заметки по ремонту":"Схема и общий ремонт"}</span></button></li>`).join("")}</ol></div></div>`:""}
+  </section></div>
+  <footer class="foot">На плитках настоящие машины этих поколений. <button class="footlink" id="fc">Авторы и лицензии фото</button></footer>`;
+ $("#fc").onclick=()=>go("photos");
+ app.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{const nn=findNat(b.dataset.n);const first=nn.makes.find(m=>m.models);go(first?`tree-${nn.id}-${first.id}`:`tree-${nn.id}`)});
+ app.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{const m=makeOf(n,b.dataset.m),f=m.models.find(q=>q.gens);go(`tree-${n.id}-${m.id}-${f.id}`)});
+ app.querySelectorAll("[data-md]").forEach(b=>b.onclick=()=>go(`tree-${n.id}-${mk.id}-${b.dataset.md}`));
+ app.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>go(`car-${n.id}-${mk.id}-${md.id}-${b.dataset.g}`));
+}
+
+function openCar(){
+ const n=findNat(state.nat),mk=makeOf(n,state.make),md=modelOf(mk,state.model),g=state.gen;
+ setCrumbs([[n.n,`tree-${n.id}`],[mk.n,`tree-${n.id}-${mk.id}`],[md.n,`tree-${n.id}-${mk.id}-${md.id}`],[`${g.tier} ${g.code}`,null]]);
+ Object.assign(state,{part:null,sym:null,zone:"all",q:"",tab:"build",mode:"photo"});state.off=new Set();
+ if(scene){scene.destroy();scene=null}
+ app.innerHTML=`<div class="car">
+  <div class="stage" id="stage"><div class="photo" id="photo"></div><canvas id="gl" hidden aria-label="Вращаемая схема машины. Список тех же деталей есть в панели."></canvas>
+   <div class="zones" id="zones">${ZONES.map(z=>`<button data-z="${z[0]}" aria-pressed="${z[0]==="all"}">${z[1]}</button>`).join("")}</div>
+   <div class="mode" id="mode"><button data-m="photo" aria-pressed="true">Фото</button><button data-m="3d" aria-pressed="false">3D-схема</button></div>
+   <div class="cap" id="cap"></div>
+   <div class="hint" id="hint" hidden>Тяни, чтобы вращать. Колесо меняет масштаб. Клик открывает деталь.</div>
+   <div class="stamp" id="stamp" hidden><b>${mk.n} ${md.n} ${g.code}</b><span id="stampSel">Типовая схема, без масштаба</span></div><div id="tip" hidden></div></div>
+  <aside class="panel"><div class="tabs" role="tablist"><button role="tab" id="t-build" aria-selected="true">Устройство</button><button role="tab" id="t-repair" aria-selected="false">Ремонт</button></div><div class="pbody" id="pb"></div></aside></div>`;
+ $("#mode").querySelectorAll("button").forEach(b=>b.onclick=()=>setMode(b.dataset.m));
+ $("#zones").querySelectorAll("button").forEach(b=>b.onclick=()=>setZone(b.dataset.z));
+ $("#t-build").onclick=()=>setTab("build");$("#t-repair").onclick=()=>setTab("repair");
+ applyVisibility();renderPanel()}
+
+function setMode(m){state.mode=m;const tdim=m==="3d";$("#mode").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.m===m));
+ $("#photo").hidden=tdim;$("#cap").hidden=tdim;$("#gl").hidden=!tdim;$("#hint").hidden=!tdim;$("#stamp").hidden=!tdim;
+ if(tdim&&!scene){const cv=$("#gl"),tip=$("#tip");scene=new Scene(cv,id=>{selectPart(id||null)},(id,x,y)=>{if(id){tip.hidden=false;tip.textContent=PARTS[id].n;tip.style.left=x+"px";tip.style.top=y+"px"}else tip.hidden=true});
+  if(!scene.gl){const d=document.createElement("div");d.className="nogl";d.textContent="Этот браузер не показывает 3D. Фото, список деталей и раздел ремонта работают.";$("#stage").append(d);scene=null}else{scene.setCam(state.zone);if(state.zone!=="all")scene.shellA=.45}}
+ if(!tdim&&scene){scene.destroy();scene=null;const old=$("#gl"),neu=old.cloneNode(false);old.replaceWith(neu);neu.hidden=true}
+ applyVisibility()}
+function renderPhoto(){const box=$("#photo"),cap=$("#cap");if(!box||state.mode!=="photo")return;
+ const g=state.gen,carK=CARPH[state.model+"-"+slug(g)];let key=null,note="",spot=null;
+ const symPart=state.sym&&symById(state.sym).p.find(id=>PH[id]);
+ const pid=state.part||symPart;
+ if(pid&&PH[pid]){key=pid;note=pid==="engine"?"Настоящий мотор Gamma 1.6 MPi.":pid==="dash"?"Настоящий салон Kia Rio 2017.":"Настоящая деталь, снята на другой машине.";}
+ else if(state.zone!=="all"){const z=SPOTS[state.zone];spot=z.s?z:null;key=z.k;note=z.n}
+ else{key=carK;note="Настоящая машина этого поколения."}
+ if(state.part&&!PH[state.part])note="Проверенного фото этой детали пока нет. "+note;
+ const ident=key+"|"+(spot?state.zone:"");
+ if(box.dataset.id!==ident){box.dataset.id=ident;
+  box.innerHTML=spot?`<div class="pwrap" style="--r:${spot.r}"><img src="${imgURL(key,960)}" alt="${note}">${spot.s.map(a=>`<button class="spot ${a[4]?"flip":""}" data-p="${a[0]}" style="left:${a[1]}%;top:${a[2]}%" aria-label="${a[3]}"><i></i><span>${a[3]}</span></button>`).join("")}</div>`:`<img src="${imgURL(key,960)}" alt="${note}">`;
+  box.querySelectorAll(".spot").forEach(b=>b.onclick=()=>selectPart(b.dataset.p))}
+ cap.innerHTML=`<span>${note} ${credit(key)}</span>`}
+function setZone(z){state.zone=z;$("#zones").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.z===z));if(scene){scene.setCam(z);scene.spin=false;scene.shellA=z==="all"?1:.45}
+ if(state.part&&!inZone(state.part))state.part=null;applyVisibility();renderPanel()}
+const inZone=id=>state.zone==="all"||PARTS[id].z.split(" ").includes(state.zone);
+function applyVisibility(){if(scene)scene.visible=new Set(Object.keys(PARTS).filter(id=>inZone(id)&&!state.off.has(PARTS[id].s)));syncHi()}
+function syncHi(){renderPhoto();const ss=$("#stampSel");if(ss)ss.textContent=state.part?PARTS[state.part].n:"Типовая схема, без масштаба";if(!scene)return;const hi=new Map();if(state.part){(LINKS[state.part]||[]).forEach(([t])=>hi.set(t,1));scene.sel=state.part}else scene.sel=null;
+ if(state.sym&&!state.part){symById(state.sym).p.forEach(id=>hi.set(id,2))}
+ if(state.part)scene.visible.add(state.part);
+ if(state.sym&&!state.part)symById(state.sym).p.forEach(id=>scene.visible.add(id));
+ scene.hi=hi;scene.dirty=true}
+const symById=id=>SYMPTOMS.find(s=>s.id===id);
+function setTab(t){state.tab=t;state.part=null;state.sym=null;$("#t-build").setAttribute("aria-selected",t==="build");$("#t-repair").setAttribute("aria-selected",t==="repair");applyVisibility();renderPanel()}
+function selectPart(id){state.part=id;if(scene)scene.spin=false;applyVisibility();renderPanel();const b=$("#pb");if(b)b.scrollTop=0}
+function srcHTML(keys){return `<p class="src">Источники: ${keys.map(k=>`<a href="${SRC[k][1]}" target="_blank" rel="noopener">${SRC[k][0]}</a>`).join(", ")}</p>`}
+function genHead(){const g=state.gen,md=modelOf(makeOf(findNat(state.nat),state.make),state.model);return `<div><h1 class="gname">${md.n} ${g.tier} · ${g.code}</h1><div class="gyears">${g.y}</div></div>
+ <details class="facts"><summary>Кузова, моторы, источники</summary><div class="dl"><div><span class="lab">Кузов</span><span>${g.body}</span></div><div><span class="lab">Моторы</span><span>${g.eng}</span></div>${g.drive?`<div><span class="lab">Привод ГРМ</span><span>${g.drive}</span></div>`:""}${g.note?`<div><span class="lab">Замечание</span><span>${g.note}</span></div>`:""}</div>${srcHTML(g.src)}</details>`}
+function renderPanel(){const pb=$("#pb");if(!pb)return;if(state.tab==="repair")renderRepair(pb);else renderBuild(pb)}
+function renderBuild(pb){
+ if(state.part){pb.innerHTML=partHTML(state.part,"Все детали");wirePart(pb);return}
+ const g=state.gen;const list=Object.keys(PARTS).filter(id=>inZone(id)&&!state.off.has(PARTS[id].s)&&PARTS[id].n.toLowerCase().includes(state.q.toLowerCase()));
+ pb.innerHTML=`${genHead()}
+ ${g.notes?"":`<div class="banner warn">Для этого поколения проверены только годы и моторы. Устройство показано на примерах и может отличаться.</div>`}
+ <div class="chips" aria-label="Системы">${Object.keys(SYS).map(k=>`<button class="chip" data-s="${k}" aria-pressed="${!state.off.has(k)}" style="--c:${SYS[k][1]}"><i></i>${SYS[k][0]}</button>`).join("")}</div>
+ <label><span class="lab" style="display:block;margin-bottom:4px">Найти деталь</span><input type="search" id="q" value="${state.q}" placeholder="Например, помпа"></label>
+ <div><div class="lab" style="margin-bottom:5px">Показано деталей: ${list.length}</div>${list.length?`<div class="plist">${list.map(id=>`<button data-p="${id}" style="--c:${SYS[PARTS[id].s][1]}">${PH[id]?`<img src="${imgURL(id,330)}" alt="" loading="lazy">`:`<span class="noimg"><i></i></span>`}${PARTS[id].n}${g.notes&&g.notes[id]?"<small>заметка</small>":""}</button>`).join("")}</div>`:`<p class="note">Ничего не нашлось. Включите системы выше или измените запрос.</p>`}</div>`;
+ pb.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{const k=b.dataset.s;state.off.has(k)?state.off.delete(k):state.off.add(k);applyVisibility();renderPanel()});
+ pb.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>selectPart(b.dataset.p));
+ const q=$("#q");q.oninput=()=>{state.q=q.value;const pos=q.selectionStart;renderPanel();const n=$("#q");n.focus();n.setSelectionRange(pos,pos)}}
+function partHTML(id,back){const p=PARTS[id],g=state.gen,note=g.notes&&g.notes[id];
+ return `<button class="back" id="bk">← ${back}</button>
+ <div><div class="lab">${SYS[p.s][0]}</div><h2 class="pname">${p.n}</h2></div>
+ <div class="sect"><p>${p.d}</p></div>
+ ${PH[id]?"":`<p class="src">Проверенного фото этой детали пока нет, поэтому показано не оно.</p>`}
+ ${note?`<div class="banner"><div class="lab" style="color:var(--hot);margin-bottom:3px">На этом поколении</div>${note}${srcHTML(["dr","ko"])}</div>`:""}
+ ${p.w?`<div class="banner stop">${p.w}</div>`:""}
+ ${(LINKS[id]||[]).length?`<div class="sect"><div class="lab">Как соединено</div><div class="conn">${LINKS[id].map(([t,v])=>`<button data-p="${t}">${PH[t]?`<img src="${imgURL(t,330)}" alt="" loading="lazy">`:""}<span>${PARTS[t].n}</span><small>${v}</small></button>`).join("")}</div></div>`:""}
+ <div class="sect"><div class="lab">Признаки неисправности</div><ul>${p.f.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+ <div class="sect"><div class="lab">Что проверить</div><ul>${p.c.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+ <p class="src">Моменты затяжки и артикулы здесь не указаны. Смотрите заводское руководство под ваш VIN.</p>`}
+function wirePart(pb){$("#bk",pb).onclick=()=>selectPart(null);pb.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>selectPart(b.dataset.p))}
+function renderRepair(pb){
+ const g=state.gen;
+ if(state.part){pb.innerHTML=partHTML(state.part,state.sym?"К симптому":"К симптомам");wirePart(pb);return}
+ if(state.sym){const s=symById(state.sym);pb.innerHTML=`<button class="back" id="bk">← Все симптомы</button>
+  <div><div class="sev ${s.sev}">${s.L}</div><h2 class="pname">${s.t}</h2></div>
+  <div class="sect"><div class="lab">С чего начать</div><ol>${s.s.map(x=>`<li>${x}</li>`).join("")}</ol></div>
+  <div class="sect"><div class="lab">Что смотреть, по порядку</div><div class="conn">${s.p.map(id=>`<button data-p="${id}">${PH[id]?`<img src="${imgURL(id,330)}" alt="" loading="lazy">`:""}<span>${PARTS[id].n}</span><small>${SYS[PARTS[id].s][0]}</small></button>`).join("")}</div></div>
+  ${s.g?srcHTML(["dr","ko"]):""}<div class="banner stop">${SAFETY}</div>`;
+  $("#bk",pb).onclick=()=>{state.sym=null;applyVisibility();renderPanel()};pb.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>selectPart(b.dataset.p));return}
+ const own=SYMPTOMS.filter(s=>s.g&&g.extra&&g.extra.includes(s.id)),gen=SYMPTOMS.filter(s=>!s.g);
+ const tile=s=>`<button data-y="${s.id}"><span class="sev ${s.sev}">${s.L}</span><span>${s.t}</span></button>`;
+ pb.innerHTML=`${genHead()}<div class="banner stop">${SAFETY}</div>
+ ${own.length?`<div class="sect"><div class="lab" style="color:var(--hot)">Известно по этому поколению</div><div class="sym">${own.map(tile).join("")}</div></div>`:""}
+ <div class="sect"><div class="lab">Что случилось</div><div class="sym">${gen.map(tile).join("")}</div></div>`;
+ pb.querySelectorAll("[data-y]").forEach(b=>b.onclick=()=>{state.sym=b.dataset.y;state.part=null;if(scene)scene.spin=false;applyVisibility();renderPanel();pb.scrollTop=0})}
+
+$("#home").onclick=()=>go("tree-korea-hyundai-accent");
+addEventListener("hashchange",route);
+if(!location.hash)history.replaceState(null,"","#tree-korea-hyundai-accent");
+route();
+</script>
+</body></html>
