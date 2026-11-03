@@ -43,7 +43,7 @@ footer{padding:2.5rem var(--m);font-size:.95rem;color:var(--soft)}footer div{mar
 document.documentElement.className='js';
 var EUR=90.2429,CNY=12.0557,LOG=350000,CC=1998,U=function(i,w){return 'https://images.unsplash.com/photo-'+i+'?auto=format&fit=crop&w='+w+'&q=75'};
 var M=[['BMW 3 Series 325i','1768352725348-a34e9c7baaa5',192000,184,900000,990000],['BMW 5 Series 525Li','1729966085578-c7b281cf11da',275000,208,952800,1048000],['BMW X3 xDrive25i','1681113163879-b36638289c54',325000,184,900000,990000],['BMW X5 xDrive30Li','1674996047492-6b5cdc2dcf0a',500000,258,1142400,1256600]];
-var P=[['Синий','#2a5fe0'],['Красный','#d3201c'],['Зелёный','#0f8a55'],['Белый','#ffffff'],['Графит','#5c636e'],['Чёрный','#1f2126']],CS=['#f3f5f8','#3f7dff','#ffb627','#ff3b30','#8b93a1'];
+var P=[['Синий','#2a5fe0'],['Красный','#d3201c'],['Зелёный','#0f8a55'],['Белый','#ffffff'],['Графит','#5c636e']],CS=['#f3f5f8','#3f7dff','#ffb627','#ff3b30','#8b93a1'];
 var $=function(i){return document.getElementById(i)},cur=0,col=0,yr=2026,R=function(n){return Math.round(n).toLocaleString('ru-RU')+' ₽'};
 function duty(eur){var b=eur<=8500?[.54,2.5]:eur<=16700?[.48,3.5]:eur<=42300?[.48,5.5]:eur<=84500?[.48,7.5]:eur<=169000?[.48,15]:[.48,20];return Math.max(eur*b[0],b[1]*CC)*EUR}
 function fee(r){return r<=200000?1231:r<=450000?2462:r<=1200000?4924:r<=2700000?13541:r<=4200000?18465:r<=5500000?21344:r<=10000000?49240:73860}
